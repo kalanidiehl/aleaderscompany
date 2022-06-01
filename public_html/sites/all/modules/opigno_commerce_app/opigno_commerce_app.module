@@ -1,0 +1,340 @@
+<?php
+
+/**
+ * @file
+ * Module hooks.
+ */
+
+/**
+ * Implements hook_node_view().
+ */
+function opigno_commerce_app_node_view($node) {
+  global $user;
+  if (!empty($node->opigno_commerce_product) && og_is_group('node', $node) && (og_is_member('node', $node->nid, 'user', $user, array(
+        OG_STATE_ACTIVE,
+        OG_STATE_PENDING,
+        OG_STATE_BLOCKED
+      )) || !variable_get("opigno_commerce_app_type_{$node->type}_enabled", FALSE) || !opigno_commerce_app_node_quota_available($node))
+  ) {
+    $node->content['opigno_commerce_product']['#access'] = FALSE;
+  }
+}
+
+/**
+ * Implements hook_menu().
+ */
+function opigno_commerce_app_menu() {
+  if (function_exists('opigno_simple_ui_admin_redirect')) {
+    return array(
+      'admin/opigno/system/orders' => array(
+        'title' => "Orders",
+        'description' => "Manage e-commerce orders.",
+        'access arguments' => array('administer commerce_order entities'),
+        'page callback' => 'opigno_simple_ui_admin_redirect',
+        'page arguments' => array('admin/commerce/orders'),
+      ),
+    );
+  }
+}
+
+/**
+ * Implements hook_init().
+ */
+function opigno_commerce_app_init() {
+  $is_installed = variable_get('opigno_commerce_app_is_installed', FALSE);
+  if (!$is_installed) {
+    // Give authenticated users access to the commerce modules.
+    user_role_grant_permissions(DRUPAL_AUTHENTICATED_RID, array(
+      'access checkout',
+      'create commerce_customer_profile entities',
+      'edit own commerce_customer_profile entities',
+    ));
+
+    // Allow authenticated users to access checkout
+    user_role_grant_permissions(DRUPAL_ANONYMOUS_RID, array(
+      'access checkout',
+    ));
+
+    // Create fields.
+    $field = field_info_field('opigno_commerce_price');
+    if (empty($field)) {
+      try {
+        field_create_field(array(
+          'field_name' => 'opigno_commerce_price',
+          'type' => 'commerce_price',
+        ));
+      } catch (Exception $e) {
+        return;
+      }
+    }
+
+    $field = field_info_field('opigno_commerce_product');
+    if (empty($field)) {
+      try {
+        field_create_field(array(
+          'field_name' => 'opigno_commerce_product',
+          'type' => 'commerce_product_reference',
+        ));
+      } catch (Exception $e) {
+        return;
+      }
+    }
+
+    opigno_commerce_app_enable_type(OPIGNO_COURSE_BUNDLE);
+    variable_set('opigno_commerce_app_type_' . OPIGNO_COURSE_BUNDLE . '_enabled', TRUE);
+
+    // Activate e-commerce for all existing courses.
+    foreach (opigno_get_courses() as $nid) {
+      $node = node_load($nid);
+      if (empty($node->opigno_commerce_product)) {
+        rules_invoke_component('rules_create_og_product_for_course_component', $node);
+      }
+    }
+
+    // Try enabling the Paypal module, if it exists. This way, users
+    // have at least a payment method by default.
+    try {
+      module_enable(array('commerce_paypal', 'commerce_paypal_wps'), TRUE);
+    } catch (Exception $e) {
+    }
+
+    // If we're in distribution context, refresh the strings and translations.
+    if (function_exists('opigno_lms_refresh_strings_and_import')) {
+      opigno_lms_refresh_strings_and_import(array('rules', 'commerce', 'field'));
+    }
+
+    variable_set('opigno_commerce_app_is_installed', TRUE);
+  }
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function opigno_commerce_app_menu_alter(&$items) {
+  $items['group/%/%/subscribe']['page callback'] = 'opigno_commerce_app_join_link';
+  $items['group/%/%/subscribe']['access callback'] = TRUE;
+}
+
+/**
+ * Implements hook_form_node_form_alter().
+ */
+function opigno_commerce_app_form_node_form_alter(&$form, $form_state, $form_id) {
+  $node = $form['#node'];
+  if (!empty($form['opigno_commerce_price']) && og_is_group_type('node', $node->type) && !variable_get("opigno_commerce_app_type_{$node->type}_enabled", FALSE)) {
+    $form['opigno_commerce_price']['#attributes']['class'][] = 'element-invisible';
+  }
+}
+
+/**
+ * Page callback: prevent access to join link if e-commerce is enabled and user is not a member.
+ */
+function opigno_commerce_app_join_link($entity_type, $gid) {
+  if ($entity_type == 'node') {
+    global $user;
+    $node = node_load($gid);
+
+    // Don't allow anonymous subscriptions if e-commerce is enabled.
+    if (variable_get("opigno_commerce_app_type_{$node->type}_enabled", FALSE) && !empty($node->opigno_commerce_product) && !empty($node->opigno_commerce_price) && og_is_group('node', $node) && !og_is_member($entity_type, $gid, 'user', $user, array(
+        OG_STATE_ACTIVE,
+        OG_STATE_PENDING,
+        OG_STATE_BLOCKED
+      ))
+    ) {
+      {
+        if (opigno_commerce_app_node_quota_available($node)) {
+          $already_in_cart = FALSE;
+          $order = commerce_cart_order_load($user->uid);
+          if (!empty($order->commerce_line_items)) {
+            foreach ($order->commerce_line_items[LANGUAGE_NONE] as $item) {
+              $cart_line_item = commerce_line_item_load($item['line_item_id']);
+              if (!empty($cart_line_item->commerce_product[LANGUAGE_NONE][0]['product_id']) && $cart_line_item->commerce_product[LANGUAGE_NONE][0]['product_id'] == $node->opigno_commerce_product[LANGUAGE_NONE][0]['product_id']) {
+                $already_in_cart = TRUE;
+                break;
+              }
+            }
+          }
+
+          if ($already_in_cart) {
+            drupal_set_message(t("This item is already in your cart. You can finalize your order <a href='!link'>here</a>.", array('!link' => url('checkout'))), 'warning');
+            return '';
+          }
+
+          $products = commerce_product_load_multiple(array($node->opigno_commerce_product[LANGUAGE_NONE][0]['product_id']));
+          $line_item = commerce_product_line_item_new(reset($products), 1, 0, array(), 'product');
+          $line_item->data['context']['product_ids'] = array_keys($products);
+          $line_item->data['context']['add_to_cart_combine'] = FALSE;
+          $line_item->data['context']['show_single_product_attributes'] = FALSE;
+          drupal_set_title(t("Do you want to buy access to @name for !price?", array(
+            '@name' => $node->title,
+            '!price' => commerce_currency_format($node->opigno_commerce_price[LANGUAGE_NONE][0]['amount'], $node->opigno_commerce_price[LANGUAGE_NONE][0]['currency_code'])
+          )));
+          return drupal_get_form('commerce_cart_add_to_cart_form', $line_item);
+        }
+        else {
+          drupal_set_message(t('This %type is full at the moment', array(
+            '%type' => $node->type,
+          )), 'warning', PASS_THROUGH);
+          drupal_goto('node/' . $node->nid);
+        }
+      }
+    }
+    else {
+      return og_ui_subscribe($entity_type, $gid);
+    }
+  }
+}
+
+/**
+ * Enable the commerce logic on the passed node type.
+ */
+function opigno_commerce_app_enable_type($type) {
+  $instance = field_info_instance('node', 'opigno_commerce_price', $type);
+  if (empty($instance)) {
+    field_create_instance(array(
+      'bundle' => $type,
+      'default_value' => NULL,
+      'description' => 'The price you want to sell this group for. If left empty, the group cannot be bought.',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'commerce_price',
+          'settings' => array(
+            'calculation' => FALSE,
+          ),
+          'type' => 'commerce_price_formatted_amount',
+          'weight' => 5,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'opigno_commerce_price',
+      'label' => 'Price',
+      'widget' => array(
+        'active' => 1,
+        'module' => 'commerce_price',
+        'settings' => array(
+          'currency_code' => 'default',
+        ),
+        'type' => 'commerce_price_simple',
+        'weight' => 4,
+      ),
+    ));
+  }
+
+  $instance = field_info_instance('node', 'opigno_commerce_product', $type);
+  if (empty($instance)) {
+    field_create_instance(array(
+      'bundle' => $type,
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'commerce_cart',
+          'settings' => array(
+            'combine' => TRUE,
+            'default_quantity' => 1,
+            'line_item_type' => 'product',
+            'show_quantity' => FALSE,
+            'show_single_product_attributes' => FALSE,
+          ),
+          'type' => 'commerce_cart_add_to_cart_form',
+          'weight' => 4,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 0,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'opigno_commerce_product',
+      'label' => 'OG Product',
+      'required' => FALSE,
+      'settings' => array(
+        'field_injection' => 1,
+        'referenceable_types' => array(
+          'og_product' => 'og_product',
+          'product' => 0,
+        ),
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'commerce_product_reference',
+        'settings' => array(),
+        'type' => 'commerce_product_reference_hidden',
+        'weight' => 3,
+      ),
+    ));
+  }
+}
+
+function opigno_commerce_app_node_quota_available($node) {
+  if (($node->type == "course") & (module_exists('opigno_course_quota_app'))) {
+    $info = opigno_course_quota_app_students_info($node);
+    if (($info['places'] != -1) && ($info['places'] != NULL) && ($info['available_places'] <= 0)) {
+      return FALSE;
+    }
+    else {
+      return TRUE;
+    }
+  }
+
+  if (($node->type == "class") & (module_exists('opigno_class_quota_app'))) {
+    $info = opigno_class_quota_app_students_info($node);
+    if (($info['places'] != -1) && ($info['places'] != NULL) && ($info['available_places'] <= 0)) {
+      return FALSE;
+    }
+    else {
+      return TRUE;
+    }
+  }
+  return TRUE;
+}
+
+function opigno_commerce_app_preprocess_field(&$variables) {
+  if (($variables['element']['#field_name'] == 'group_group') && ($variables['element']['#formatter'] == 'og_group_subscribe')) {
+    if (isset($variables['items'][0]['#options']['query']['destination'])) {
+      $variables['items'][0]['#href'] = $variables['items'][0]['#options']['query']['destination'];
+      unset($variables['items'][0]['#options']['query']['destination']);
+    }
+  }
+}
+
+function opigno_commerce_app_preprocess_views_view_fields(&$vars) {
+  if ($vars['view']->name == "opigno_course_catalgue") {
+    if (isset($vars['fields']['group_group']->content) && (isset($vars['fields']['group_group']->content))) {
+      $node = node_load($vars['fields']['group_group']->raw);
+      if (!empty($node->opigno_commerce_product) && !empty($node->opigno_commerce_price)) {
+        $vars['fields']['group_group']->content = '<div class="field-content"><a href="group/node/' . $vars['fields']['group_group']->raw . '/subscribe/og_user_node">' . t('Buy access') . '</a></div>';
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_view_pre_render().
+ */
+function opigno_commerce_app_views_pre_render(&$view) {
+  if ($view->name == "opigno_course_catalgue") {
+    foreach ($view->result as $res) {
+      if (isset($res->field_group_group[0]['rendered']['#href'])) {
+        if (isset($res->field_group_group[0]['rendered']['#options']['query']['destination'])) {
+          $res->field_group_group[0]['rendered']['#href'] = $res->field_group_group[0]['rendered']['#options']['query']['destination'];
+          unset($res->field_group_group[0]['rendered']['#options']['query']['destination']);
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+

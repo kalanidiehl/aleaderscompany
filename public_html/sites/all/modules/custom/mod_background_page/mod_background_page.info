@@ -1,0 +1,7 @@
+name = Mod background page
+description = "Provide Block show background for each page"
+core = 7.x
+package = Custom module - Required
+
+dependencies[] = libraries
+

@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AAGE,0DAAkC;EAChC,KAAK,EAAE,IAAI;AAGb,2DAAmC;EACjC,OAAO,EAAE,KAAK;;AAKlB,yBAA0B;EACxB,GAAG,EAAE,eAAe;;AAEtB,qBAAqB;EACnB,OAAO,EAAE,gBAAgB",
+"sources": ["bcadgroup.scss"],
+"names": [],
+"file": "bcadgroup.css"
+}

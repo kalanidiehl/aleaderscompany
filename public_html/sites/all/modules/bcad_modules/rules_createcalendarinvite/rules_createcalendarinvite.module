@@ -1,0 +1,30 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: local-admin
+ * Date: 11/22/2017
+ * Time: 10:12 AM
+ */
+
+/**
+ * Implements hook_action_info().
+ */
+/**
+ * Implements hook_form_FORM_ID_alter().
+ */
+function rules_createcalendarinvite_form_alter(&$form, &$form_state, $form_id) {
+
+  if ($form_id == 'meeting_request_node_form') {
+    $params = drupal_get_query_parameters();
+    if (!isset($form['#node']->field_invitee['und'][0]['value'])) {
+      if (isset($params['uid'])) {
+        $form['field_invitee']['und'][0]['value']['#default_value'] = $params['uid'];
+      }
+      else {
+        drupal_access_denied();
+        drupal_exit();
+      }
+
+    }
+  }
+}

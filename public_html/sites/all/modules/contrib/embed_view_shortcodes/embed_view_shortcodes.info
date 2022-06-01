@@ -1,0 +1,12 @@
+name = Shortcodes to Display View and Block Data
+description = Shortcode tags to display View and Block Data.
+package = Shortcode
+core = 7.x
+dependencies[] = shortcode
+
+; Information added by Drupal.org packaging script on 2016-05-25
+version = "7.x-1.0"
+core = "7.x"
+project = "embed_view_shortcodes"
+datestamp = "1464158653"
+

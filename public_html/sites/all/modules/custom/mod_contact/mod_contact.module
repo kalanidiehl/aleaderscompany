@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * Implements hook_block_info().
+ */
+function mod_contact_block_info()
+{
+    $block = array();
+    $block ['contact_default'] = array(
+        'info' => t('Contact Block'),
+        'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+    $block['mod_contact_landing_page'] = array(
+        'info' => t('Contact Landing page'),
+        'cache' => DRUPAL_CACHE_PER_PAGE
+    );
+    $block['mod_contact_one_page'] = array(
+        'info' => t('Contact one page'),
+        'cache' => DRUPAL_CACHE_PER_PAGE,
+    );
+    return $block;
+}
+
+
+/**
+ * Implements hook_block_view().
+ */
+function mod_contact_block_view($delta = '')
+{
+
+    $block = array();
+    switch ($delta){
+        case 'contact_default':
+        case 'mod_contact_landing_page':
+        case 'mod_contact_one_page':
+
+        if (user_access('access site-wide contact form') && module_exists('contact')) {
+            if (!flood_is_allowed('contact', variable_get('contact_hourly_threshold', 3))) {
+                $content = t("You cannot send more than %number messages per hour. Please try again later.", array('%number' => variable_get('contact_hourly_threshold', 3)));
+            }
+            else {
+                module_load_include('inc', 'contact', 'contact.pages');
+                $contact = drupal_get_form('contact_site_form');
+                $content = drupal_render($contact); //'landing_page_contact_site_form');//['#markup'] = $contact;//drupal_render(drupal_get_form('contact_site_form'));
+            }
+            
+            $block['title'] = '';
+
+            $block['content']['#markup'] = $content;
+        }
+        break;
+    }
+    return $block;
+}
+
+
+

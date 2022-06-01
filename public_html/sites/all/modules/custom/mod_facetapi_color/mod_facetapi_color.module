@@ -1,0 +1,37 @@
+<?php
+
+/**
+ * Implements hook_facetapi_widgets().
+ */
+function mod_facetapi_color_facetapi_widgets()
+{
+    return array(
+        'facetapi_color' => array(
+            'handler' => array(
+                'label' => t('Colors Swatches element'),
+                'class' => 'FacetapiColorSwatchesWidget',
+                'query types' => array('term'),
+            ),
+        ),
+    );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mod_facetapi_color_theme($existing, $type, $theme, $path)
+{
+    return array(
+        'mod_color_swatches'=> array(
+            'variables' => array('color' => '','width'=> 50,'height' => 50)
+        )
+    );
+}
+
+function theme_mod_color_swatches($variables) {
+    $color = $variables['color'];
+    $width = $variables['width'];
+    $height = $variables['height'];
+
+    return '<div class="color-swatch" style="background-color: ' . $color .  '; width: ' . $width . 'px; height: ' . $height . 'px;"></div>';
+}

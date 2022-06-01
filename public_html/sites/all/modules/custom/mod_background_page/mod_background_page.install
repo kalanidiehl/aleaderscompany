@@ -1,0 +1,33 @@
+<?php
+
+/*
+ *   implement hook_schema()
+ */
+function mod_background_page_schema()
+{
+    $schema = array();
+    $schema["mod_background_page"] = array(
+        "description" => t("This database background page"),
+        "fields" => array(
+            "id" => array(
+                "description" => "Primary key to identify a slider",
+                "type" => "serial",
+                "unsigned" => TRUE,
+                "no null"  => TRUE,
+            ),
+            "title" => array(
+                "description" => "The name of page for background",
+                "type" => "varchar",
+                "length" => 255,
+                "no null" => TRUE,
+            ),
+            "data" => array(
+                "description" => "The data of background and pages",
+                "type" => "text",
+                "size" => "big"
+            ),
+        ),
+        'primary key' => array("id")
+    );
+    return $schema;
+}

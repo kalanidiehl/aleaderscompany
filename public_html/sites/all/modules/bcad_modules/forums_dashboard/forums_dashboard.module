@@ -1,0 +1,270 @@
+<?php
+
+function forums_dashboard_init() {
+  drupal_add_library('system', 'drupal.ajax');
+}
+
+/**
+ * Implements hook_menu().
+ */
+function forums_dashboard_menu() {
+  // Ajax callback
+  $items['ajax/coaching_summary'] = [
+    'title' => 'Update Coaching Summary',
+    'page callback' => 'forums_dashboard_update_coaching',
+    'access arguments' => ['access content'],
+    'type' => MENU_CALLBACK,
+  ];
+  $items['ajax/update_coaching_hours'] = [
+    'title' => 'Update Coaching Hours',
+    'page callback' => 'forums_dashboard_update_coaching_hours',
+    'access arguments' => ['access content'],
+    'type' => MENU_CALLBACK,
+  ];
+
+  return $items;
+}
+
+function forums_dashboard_block_info() {
+  $blocks['forum_summary'] = [
+    // The name that will appear in the block list.
+    'info' => t('Forum Summary'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ];
+  $blocks['forum_coach_summary'] = [
+    // The name that will appear in the block list.
+    'info' => t('Coaching Summary'),
+    // Default setting.
+    'cache' => DRUPAL_CACHE_PER_ROLE,
+  ];
+  return $blocks;
+}
+
+function forums_dashboard_libraries_info() {
+  $libraries = [];
+  $libraries['jquery.selectboxit'] = [
+    'name' => 'jquery.selectboxit',
+    'vendor url' => 'http://www.selectboxit.com',
+    'download url' => 'https://github.com/gfranko/jquery.selectBoxIt.js',
+    'version callback' => 'simple_version_callback',
+    'files' => [
+      'js' => [
+        'src/javascripts/jquery.selectBoxIt.min.js',
+      ],
+      'css' => [
+        'src/stylesheets/jquery.selectBoxIt.css',
+      ],
+    ],
+  ];
+
+  return $libraries;
+}
+
+function simple_version_callback() {
+  return TRUE;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function forums_dashboard_block_view($delta = '') {
+  switch ($delta) {
+    case 'forum_summary' :
+      $block['subject'] = t('Forums');
+      if (user_access('access content')) {
+        $summary = _get_forum_info();
+      }
+
+      if (empty($summary)) {
+        $block['content'] = t('No Results Found');
+      }
+      else {
+        $block['content'] = "<div class='forum_summary'>" . $summary . "</div>";
+      }
+      return $block;
+
+    case
+    'forum_coach_summary' :
+      return _display_coaching_block();
+  }
+}
+
+function _display_coaching_block() {
+
+  drupal_add_js(drupal_get_path('module', 'forums_dashboard') . '/forums_dashboard.js', ['scope' => 'footer']);
+  $library = libraries_load('jquery.selectboxit');
+
+  $block['subject'] = t('Coaching Summary');
+  if (user_access('access content')) {
+    //set up filter by cohort
+    $cohorts = views_get_view('coaching_summary_views');
+    $cohorts->preview('cohort_list');
+
+    $selectlist = "<label>Please Select a Cohort or Course</label><select id='cohort-select-value' name='cohort_select_value' class='form-select'>";
+    $selectlist .= "<option value='none' selected>None</option>";
+
+    foreach ($cohorts->result as $cohort) {
+      $selectlist .= "<option value='" . $cohort->og_membership_users_gid . "'>" . $cohort->node_og_membership_title . "</option>";
+    }
+    $selectlist .= "</select>";
+
+
+  }
+
+
+  $block['content'] = "<div class='cohort_select'>";
+  $block['content'] .= $selectlist;
+  $block['content'] .= "</div>";
+  $block['content'] .= "<div class='forum_summary' id='coaching_summary_ajax'></div>";
+
+  return $block;
+}
+
+function forums_dashboard_update_coaching() {
+  $cohort_id = ($_POST['cohort_id']);
+  //$commands = array();
+  //print_r($_GET);
+  //print "cohort id: " . $cohort_id;
+  $result = "";
+  if ($cohort_id != 'none') {
+
+    //get cohort information
+    $result .= _get_cohort_info($cohort_id);
+    //print the forum information
+    $result .= _get_forum_info($cohort_id);
+
+    //print the students information
+    $result .= _get_student_info($cohort_id);
+  }
+
+
+  print $result;
+
+  //$commands[] = ajax_command_html('#coaching_summary_ajax',$result);
+  //$commands[] = array('command' => 'forums_dashboard_trigger');
+  //print ajax_render($commands);
+  //ajax_deliver(array('#type' => 'ajax', '#commands' => $commands));
+
+  drupal_exit();
+}
+
+/**
+ * Implements hook_menu().
+ */
+function forums_dashboard_update_coaching_hours() {
+  if ((isset($_POST['uid'])) && (isset($_POST['hours']))) {
+    $user = user_load($_POST['uid']);
+    $edit = array(
+      'field_coaching_hours' => array(
+        'und' => array(
+          0 => array(
+            'value' => $_POST['hours'],
+
+          ),
+        ),
+      ),
+    );
+    user_save($user,$edit);
+    print "Saved...";
+  }
+
+
+  drupal_exit();
+}
+
+function _get_cohort_info($cohort_id) {
+  $result = "";
+  $view = views_get_view('cohort_information');
+  $args = [$cohort_id];
+  $view->preview('default', $args);
+  if (!empty($view->result)) {
+    $result .= "<div class='cohort-information-block'>";
+
+    foreach ($view->result as $view_row) {
+      $result .= "<div class='belt-bg " . strtolower($view_row->field_field_belt_color[0]['rendered']['#markup']) . "'>";
+      $result .= "<div class='product'>" . $view_row->field_field_product[0]['rendered']['#markup'] . "</div>";
+      if (isset($view_row->users_field_data_field_master_user_account__field_data_field)) {
+        $result .= "<div><label>Cohort Master Account</label><div class='name'>" . $view->result[0]->users_field_data_field_master_user_account__field_data_field . "</div></div>";
+      }
+      $result .= "<div><label>Cohort Dates</label>";
+      $result .= "<div class='cohort-dates'>" . $view->result[0]->field_field_course_date[0]['rendered']['#markup'] . "</div></div>";
+      $result .= "</div>";
+    }
+    $result .= "</div>";
+  }
+
+  return $result;
+}
+
+function _get_forum_info($cohort_id = "ALL") {
+  $forums = advanced_forum_forum_load();
+
+  $forum_info_list = '';
+  foreach ($forums->forums as $forum) {
+    $forum_term = taxonomy_term_load($forum->tid);
+
+    if (($cohort_id == "ALL") || ($forum_term->og_group_ref['und'][0]['target_id'] == $cohort_id)) {
+      $unread = _forum_topics_unread($forum->tid, $GLOBALS['user']->uid);
+
+      //$view = views_get_view_result('forum_comment_count','block_1',$forum->tid);
+      $view = views_get_view('forum_comment_count');
+      $args = [$forum->tid];
+      $view->preview('block_1', $args);
+
+
+      $total_comments = 0;
+      $new_comments = 0;
+      foreach ($view->result as $item) {
+        $total_comments += $item->node_comment_statistics_comment_count;
+        $new_comments += $item->node_new_comments;
+
+      }
+
+      $forum_info_list .= "<div class='forum_row'>";
+      $forum_info_list .= "<div class='forum_title'><a href='forum/" . $forum->tid . "'>";
+      if (($unread > 0) || ($new_comments > 0)) {
+        $forum_info_list .= "<i class=\"fa fa-star unread\" aria-hidden=\"true\"></i>&nbsp;";
+      }
+      $forum_info_list .= $forum->name . "</a></div>";
+      $forum_info_list .= "<div class='forum_topics'>Topics: " . $forum->num_topics;
+
+
+      if ($unread > 0) {
+        $forum_info_list .= " (<span class='unread'>" . $unread . " New</span>)";
+      }
+
+
+      $forum_info_list .= "</div>";
+
+      $forum_info_list .= "<div class='forum_comments'>Comments: " . $total_comments;;
+
+      if ($new_comments > 0) {
+        $forum_info_list .= " (<span class='unread'>" . $new_comments . " New</span>)";
+      }
+
+      $forum_info_list .= "</div></div>";
+    }
+  }
+  if (!empty($forum_info_list)) {
+    if ($cohort_id != "ALL") {
+      return "<div class='title'>Forum Summary</div>" . $forum_info_list;
+    }
+    else {
+      return $forum_info_list;
+    }
+  }
+  else {
+    return NULL;
+  }
+
+
+}
+
+function _get_student_info($cohort_id) {
+  $args = [$cohort_id];
+  return views_embed_view('cohort_user_list', 'user_list', $args);
+
+}
+
+

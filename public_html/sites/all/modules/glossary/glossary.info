@@ -1,0 +1,15 @@
+name = Glossary
+description = Export the Glossary
+core = 7.x
+package = Features
+dependencies[] = ctools
+dependencies[] = entityreference
+dependencies[] = features
+dependencies[] = options
+dependencies[] = strongarm
+dependencies[] = taxonomy
+features[ctools][] = strongarm:strongarm:1
+features[features_api][] = api:2
+features[field_base][] = opigno_class_courses
+features[field_instance][] = taxonomy_term-glossary-opigno_class_courses
+features[taxonomy][] = glossary

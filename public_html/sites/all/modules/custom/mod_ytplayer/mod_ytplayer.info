@@ -1,0 +1,9 @@
+name = Mod ytPlayer
+description = Provides Block support Video run ytPlayer
+package = Custom module - Required
+core = 7.x
+dependencies[] = media
+dependencies[] = media_youtube
+dependencies[] = media_vimeo
+version = "7.x-1.0"
+core = "7.x"

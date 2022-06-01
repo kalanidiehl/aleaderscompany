@@ -1,0 +1,470 @@
+<?php
+
+/**
+ * @file
+ * Module hooks.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function opigno_video_app_menu() {
+  return array(
+    'node/%node/sort-videos' => array(
+      'title' => "Sort videos",
+      'description' => "Sort videos inside the course",
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('opigno_video_app_sort_course_videos_form', 1),
+      'access callback' => 'opigno_video_app_access_node_sort_videos',
+      'access arguments' => array(1),
+      'file' => 'includes/opigno_video_app.pages.inc',
+      'type' => MENU_CALLBACK,
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_alter().
+ */
+function opigno_video_app_menu_alter(&$items) {
+  // Alter video module item to avoid field name bug.
+  if (isset($items['video/embed/%/%/%/%/%'])) {
+    $items['video/embed/%/%/%/%/%']['page callback'] = 'opigno_video_app_video_file_embed';
+  }
+}
+
+/**
+ * Implements hook_wysiwyg_include_directory().
+ */
+function opigno_video_app_wysiwyg_include_directory($type) {
+  switch ($type) {
+    case 'plugins':
+      return 'wysiwyg_plugins';
+      break;
+  }
+}
+
+/**
+ * Implements hook_og_permission().
+ */
+function opigno_video_app_og_permission() {
+  return array(
+    'access video content' => array(
+      'title' => t("Allows the user the view the videos"),
+      'description' => t("Allows the creation of new videos"),
+    ),
+    'sort videos' => array(
+      'title' => t("Sort videos inside this course"),
+    ),
+  );
+}
+
+/**
+ * Implements hook_opigno_breadcrumbs().
+ */
+function opigno_video_app_opigno_breadcrumbs($gid) {
+  $breadcrumbs = array();
+
+  $node = menu_get_object();
+  // Must we handle this page request for the breadcrumb ?
+  if ((isset($node->type) && $node->type == 'video') ||
+      current_path() == 'node/add/video' || 
+      preg_match('/^node\/[0-9]+\/sort-videos$/', current_path())) {
+    
+    // Add the Opigno Videos view link.
+    $breadcrumbs[] = l(opigno_video_app_get_videos_view_title(), "node/$gid/videos");
+  }
+
+  if (!empty($breadcrumbs)) {
+    return $breadcrumbs;
+  }
+}
+
+/**
+ * Helper function to get the Opigno Videos View title.
+ *
+ * As the title might change depending on individual configuration,
+ * fetch it here and cache it for better performance.
+ *
+ * @return string
+ */
+function opigno_video_app_get_videos_view_title() {
+  $cache = cache_get('opigno_video_app:view_title:videos');
+  if ($cache) {
+    return $cache->data;
+  }
+  else {
+    $view = views_get_view('videos');
+    if (!empty($view->display['default']->display_options['title'])) {
+      $view_title = $view->display['default']->display_options['title'];
+    }
+    else {
+      $view_title = t("Videos");
+    }
+    cache_set('opigno_video_app:view_title:videos', $view_title, 'cache', CACHE_TEMPORARY);
+    return $view_title;
+  }
+}
+
+/**
+ * Access callback: check if user has access to sort videos inside the course.
+ *
+ * @param  stdClass $node
+ * @param  stdClass $account = NULL
+ *
+ * @return bool
+ */
+function opigno_video_app_access_node_sort_videos($node, $account = NULL) {
+  if (!isset($account)) {
+    global $user;
+    $account = clone $user;
+  }
+  return og_user_access('node', $node->nid, 'sort videos', $account);
+}
+
+/**
+ * Implements hook_opigno_tool().
+ */
+function opigno_video_app_opigno_tool($node = NULL) {
+  return array(
+    'video' => array(
+      'name' => t("Video"),
+      'path' => isset($node) ? "node/{$node->nid}/videos" : '',
+      'description' => t("The videos for this course"),
+      'actions' => array(
+        'add_video' => array(
+          'title' => t("Add a new Video"),
+          'href' => 'node/add/video',
+          'access_arguments' => array(
+            'node',
+            isset($node) ? $node->nid : 0,
+            'create video content',
+          ),
+          'access_callback' => 'og_user_access',
+          'query' => array(
+            'og_group_ref' => isset($node) ? $node->nid : '',
+          ),
+        ),
+      ),
+    ),
+  );
+}
+
+/**
+ * Implements hook_views_api().
+ */
+function opigno_video_app_views_api() {
+  return array(
+    'api' => '3.0',
+  );
+}
+
+/**
+ * Implements hook_theme().
+ */
+function opigno_video_app_theme() {
+  return array(
+    'opigno_video_app_sort_course_videos_form' => array(
+      'render element' => 'form',
+    ),
+  );
+}
+
+/**
+ * Implements hook_menu_local_tasks_alter().
+ */
+function opigno_video_app_menu_local_tasks_alter(&$data, $router_item, $root_path) {
+  if ($root_path == 'node/%/videos') {
+    $gid = arg(1);
+    if (og_user_access('node',$gid,'create video content')) {
+      $item = menu_get_item('node/add/video');
+      $item['title'] = t("Add video");
+      $item['options']['query']['og_group_ref'] = $item['localized_options']['query']['og_group_ref'] = $gid;
+      $item['options']['attributes']['class'][] = $item['localized_options']['attributes']['class'][] = 'opigno-video-video';
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+    $node=node_load($gid);
+    if (opigno_video_app_access_node_sort_videos($node,NULL)) {
+      $item = menu_get_item("node/$gid/sort-videos");
+      $destination = request_path();
+      $item['options']['query']['destination'] = $item['localized_options']['query']['destination'] = $destination;
+      $item['options']['attributes']['class'][] = $item['localized_options']['attributes']['class'][] = 'opigno-video-app-sort-videos';
+      $data['actions']['output'][] = array(
+        '#theme' => 'menu_local_action',
+        '#link' => $item,
+      );
+    }
+  }
+}
+
+/**
+ * Implements hook_node_insert().
+ */
+function opigno_video_app_node_insert($node) {
+  if ($node->type == 'video' && !empty($node->nid) && !empty($node->og_group_ref)) {
+    foreach ($node->og_group_ref as $lang => $items) {
+      foreach ($items as $item) {
+        // Set a default weight of 0.
+        opigno_video_app_set_course_video_weight($item['target_id'], $node->nid);
+      }
+    }
+  }
+}
+
+function opigno_video_app_views_data() {
+  $data['opigno_video_app_video_sort']['table']['group'] = t("Opigno Video App");
+  $data['opigno_video_app_video_sort']['table']['join'] = array(
+    'node' => array(
+      'left_field' => 'nid',
+      'field' => 'video_nid',
+    ),
+  );
+  $data['opigno_video_app_video_sort']['gid'] = array(
+    'title' => t("The Video group"),
+    'relationship' => array(
+      'base' => 'node',
+      'base field' => 'nid',
+      'handler' => 'views_handler_relationship',
+      'label' => t("Group"),
+    ),
+  );
+  $data['opigno_video_app_video_sort']['video_nid'] = array(
+    'title' => t("The Video weight (as in order) inside a group"),
+    'relationship' => array(
+      'base' => 'node',
+      'base field' => 'nid',
+      'label' => t("Video"),
+    ),
+  );
+  $data['opigno_video_app_video_sort']['weight'] = array(
+    'title' => t("Video (as in order)"),
+    'help' => t("The Video of the video inside a specific group"),
+    'field' => array(
+      'handler' => 'opigno_video_app_field_course_video_weight',
+      'click sortable' => TRUE,
+    ),
+    'filter' => array(
+      'handler' => 'opigno_video_app_field_course_video_weight',
+    ),
+    'sort' => array(
+      'handler' => 'opigno_video_app_sort_course_video_weight',
+    ),
+    'argument' => array(
+      'handler' => 'views_handler_argument_numeric',
+    ),
+  );
+  return $data;
+}
+
+/**
+ * Helper function to fetch the weight of a video inside a course.
+ *
+ * @param  int $gid
+ * @param  int $nid
+ *
+ * @return int
+ */
+function opigno_video_app_get_course_video_weight($gid, $nid) {
+  $weight = db_select('opigno_video_app_video_sort', 'w')
+    ->fields('w', array('weight'))
+    ->condition('w.gid', $gid)
+    ->condition('w.video_nid', $nid)
+    ->execute()
+    ->fetchField();
+  return empty($weight) ? 0 : $weight;
+}
+
+/**
+ * Helper function to insert the weight of a video inside a course.
+ *
+ * @param  int $gid
+ * @param  int $nid
+ * @param  int $weight
+ */
+function opigno_video_app_set_course_video_weight($gid, $nid, $weight = 0) {
+  db_merge('opigno_video_app_video_sort')
+    ->key(array(
+      'gid' => $gid,
+      'video_nid' => $nid,
+    ))
+    ->fields(array(
+      'gid' => $gid,
+      'video_nid' => $nid,
+      'weight' => $weight,
+    ))
+    ->execute();
+}
+
+/**
+ * Helper function to fetch all course videos.
+ *
+ * @param  stdClass $node
+ *
+ * @return array
+ */
+function opigno_video_app_get_course_videos($node) {
+  //dpm($node);
+  $videos = &drupal_static(__FUNCTION__);
+  //dpm("Comes here 1");
+  if (!isset($videos[$node->nid])) {
+    //dpm("Comes here 2");
+    $videos[$node->nid] = array();
+
+    $query = new EntityFieldQuery();
+    $query->entityCondition('entity_type', 'node')
+      ->entityCondition('bundle', 'video')
+      ->fieldCondition('og_group_ref', 'target_id', $node->nid, '=')
+      ->addMetaData('account', user_load(1));
+    //dpm("Comes here 3");
+    $result = $query->execute();
+    //dpm("Comes here 4");
+    $temp = array();
+    if (!empty($result['node'])) {
+      foreach (array_keys($result['node']) as $video_nid) {
+        //dpm("Comes here 5");
+        $temp[$video_nid] = opigno_video_app_get_course_video_weight($node->nid, $video_nid);
+        //dpm("Comes here 6");
+      }
+    }
+    // Sort by weight.
+    asort($temp);
+    $videos[$node->nid] = array_keys($temp);
+    //dpm($videos);
+  }
+
+  return $videos[$node->nid];
+}
+
+/**
+ * Theme callback: render the order form.
+ */
+function theme_opigno_video_app_sort_course_videos_form($vars) {
+  $form = $vars['form'];
+  drupal_add_tabledrag('opigno-video-app-sort-course-videos', 'order', 'sibling', 'opigno-video-app-sort-course-videos-weight');
+
+  $header = array(
+    t("Videos"),
+    t("Weight"),
+  );
+
+  $rows = array();
+  foreach ($form['table'] as $key => $item) {
+    if (preg_match('/quiz_[0-9]+/', $key)) {
+      $data = array();
+      $data[] = drupal_render($item['title']) . drupal_render($item['nid']);
+      $data[] = drupal_render($item['weight']);
+
+      $rows[] = array(
+        'data' => $data,
+        'class' => array('draggable'),
+      );
+    }
+  }
+
+  $form['table'] = array(
+    '#markup' => theme('table', array('header' => $header, 'rows' => $rows, 'attributes' => array('id' => 'opigno-video-app-sort-course-videos'))),
+    '#weight' => 1,
+  );
+
+  return drupal_render_children($form);
+}
+
+/* Default value for bypass_conversion should be true */
+function opigno_video_app_form_alter(&$form, &$form_state, $form_id)
+{
+  if (($form_id=="video_node_form"))
+  {
+    if (isset($form['opigno_video'][LANGUAGE_NONE][0]['#default_value']['bypass_autoconversion']))
+    {
+      $form['opigno_video'][LANGUAGE_NONE][0]['#default_value']['bypass_autoconversion']=true;
+    }
+  }
+}
+
+/**
+ * Implements hook_filter_info().
+ */
+function opigno_video_app_filter_info() {
+  $filters = array();
+  $filters['opigno_video'] = array(
+    'title' => t('Opigno Video Filter'),
+    'description' => t('Substitutes [opigno-video:src=SRC] with embedded HTML.'),
+    'process callback' => '_opigno_video_process',
+    'weight' => -1,
+  );
+  return $filters;
+}
+
+/**
+ * Opigno video text filter process.
+ */
+function _opigno_video_process($text, $filter, $format, $langcode, $cache, $cache_id) {
+  // Check for shortcodes.
+  if (preg_match_all('/\[opigno-video(\:(.+))?( .+)?\]/isU', $text, $matches_code)) {
+    foreach ($matches_code[0] as $ci => $code) {
+      // Get shortcode attributes.
+      $attributes = array(
+        'frameborder' => 0,
+        'allowfullscreen' => 'allowfullscreen',
+        'scrolling' => 'no',
+      );
+      if (preg_match_all('/(\w+)=[\'"]([^\'"]+)[\'"]/s', $code, $atrributes_matches)) {
+        foreach ($atrributes_matches[1] as $delta => $attribute) {
+          $attributes[$attribute] = $atrributes_matches[2][$delta];
+        }
+      }
+      // Build shortcode attributes string.
+      $iframe_attributes = drupal_attributes($attributes);
+      // Build iframe markup.
+      $replacement = '<div class="opigno-video"><iframe ' . $iframe_attributes . '></iframe></div>';
+      // Replace shortcode with new markup.
+      $text = str_replace($code, $replacement, $text);
+    }
+  }
+  return $text;
+}
+
+/**
+ * Video embed menu item page callback.
+ */
+function opigno_video_app_video_file_embed($entity_id, $entity_type, $field_name, $width, $height) {
+  // Translate the field name from URL conventions and shorthand.
+  $field_name = strtr($field_name, '-', '_');
+
+  // Load the entity and field.
+  $field = field_info_field($field_name);
+  $entity = video_utility::loadEntity($entity_type, $entity_id);
+  if (empty($field) || empty($entity)) {
+    return MENU_NOT_FOUND;
+  }
+
+  // Check access to the field.
+  if (!field_access('view', $field, $entity_type, $entity)) {
+    return MENU_ACCESS_DENIED;
+  }
+
+  list($id, $rev, $bundle) = entity_extract_ids($entity_type, $entity);
+  $instance = field_info_instance($entity_type, $field['field_name'], $bundle);
+
+  // Not instance for this entity, wrong field type, or wrong module.
+  if (empty($instance) || $field['type'] !== 'video' || $field['module'] != 'video') {
+    return MENU_NOT_FOUND;
+  }
+
+  // Let field_get_items() handle language and field fetching
+  // considerations. Also protects against future API changes.
+  $items = field_get_items($entity_type, $entity, $instance['field_name']);
+
+  $element = array(
+    '#theme' => 'video_formatter_player',
+    '#item' => reset($items),
+    '#entity' => $entity,
+    '#field' => $field,
+    '#instance' => $instance,
+    '#player_dimensions' => $width . 'x' . $height,
+  );
+  return drupal_render($element);
+}

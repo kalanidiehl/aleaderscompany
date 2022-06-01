@@ -1,0 +1,426 @@
+<?php
+
+/**
+ * @file
+ * Contains install instructions and logic
+ */
+
+/**
+ * Implements hook_install().
+ */
+function opigno_video_app_install() {
+
+  // Check if content type exists.
+  $type = node_type_load("video");
+  if (empty($type)) {
+    $type = node_type_set_defaults(array(
+      'type' => 'video',
+      'name' => 'Video',
+      'base' => 'node_content',
+      'description' => 'A Video',
+      'has_title' => '1',
+      'title_label' => 'Title',
+      'help' => '',
+    ));
+    node_type_save($type);
+    node_add_body_field($type);
+  }
+
+  if (module_exists('comment')) {
+    variable_set('comment_video', COMMENT_NODE_CLOSED);
+  }
+  variable_set('node_submitted_video',0);
+  if (module_exists('print'))
+  {
+    variable_set('print_display_video',0);
+    variable_set('print_display_urllist_video',0);
+    variable_set('print_pdf_display_video',0);
+    variable_set('print_pdf_display_urllist_video',0);
+  }
+
+  include_once drupal_get_path('module', 'og') . '/og_ui/og_ui.module';
+  if (function_exists('og_ui_node_type_save')) {
+    variable_set("og_group_content_type_video", TRUE);
+    og_ui_node_type_save('video');
+    opigno_video_app_update_og_group_ref();
+    if (module_exists('og_access')) {
+      og_create_field(OG_CONTENT_ACCESS_FIELD, 'node', 'video');
+      opigno_video_app_update_og_content_access();
+    }
+  }
+
+
+
+  $field = field_info_field('opigno_video');
+  if (empty($field)) {
+    field_create_field(array(
+      'active' => 1,
+      'cardinality' => 1,
+      'deleted' => 0,
+      'entity_types' => array(),
+      'field_name' => 'opigno_video',
+      'foreign keys' => array(
+        'fid' => array(
+          'columns' => array(
+            'fid' => 'fid',
+          ),
+          'table' => 'file_managed',
+        ),
+      ),
+      'indexes' => array(
+        'fid' => array(
+          0 => 'fid',
+        ),
+      ),
+      'locked' => 0,
+      'module' => 'video',
+      'settings' => array(
+        'autoconversion' => 1,
+        'autothumbnail' => 'auto',
+        'default_video_thumbnail' => array(
+          'fid' => 0,
+          'remove_button' => 'Remove',
+          'upload' => '',
+          'upload_button' => 'Upload',
+        ),
+        'presets' => array(
+          'Mp4' => 0,
+        ),
+        'preview_video_thumb_style' => 'thumbnail',
+        'thumbnail_format' => 'jpg',
+        'uri_scheme' => 'public',
+        'uri_scheme_converted' => 'public',
+        'uri_scheme_thumbnails' => 'public',
+      ),
+      'translatable' => 1,
+      'type' => 'video',
+    ));
+  }
+
+  $instance = field_info_instance('node', 'opigno_video', 'video');
+  if (empty($instance)) {
+    field_create_instance(array(
+      'bundle' => 'video',
+      'deleted' => 0,
+      'description' => '',
+      'display' => array(
+        'default' => array(
+          'label' => 'above',
+          'module' => 'video',
+          'settings' => array(
+            'poster_image_style' => '',
+            'widthxheight' => '640x360',
+          ),
+          'type' => 'video_formatter_player',
+          'weight' => 0,
+        ),
+        'teaser' => array(
+          'label' => 'above',
+          'settings' => array(),
+          'type' => 'hidden',
+          'weight' => 1,
+        ),
+      ),
+      'entity_type' => 'node',
+      'field_name' => 'opigno_video',
+      'label' => 'Video',
+      'required' => 0,
+      'settings' => array(
+        'default_dimensions' => '640x360',
+        'file_directory' => 'videos/original',
+        'file_extensions' => 'mp4 ogg avi mov wmv flv ogv webm',
+        'max_filesize' => '',
+        'user_register_form' => FALSE,
+      ),
+      'widget' => array(
+        'active' => 1,
+        'module' => 'video',
+        'settings' => array(
+          'progress_indicator' => 'throbber',
+        ),
+        'type' => 'video_upload',
+        'weight' => 32,
+      ),
+    ));
+  }
+  opigno_video_app_permissions_set();
+  module_load_include('inc','video_ui', 'video.admin');
+  $video_module_info = system_get_info('module', 'video');
+  if ($video_module_info['version'] >= '7.x-2.11') {
+    $extensions = video_utility::getVideoExtensionPlayers();
+  }
+  else {
+    $extensions = video_utility::getVideoExtensions();
+  }
+  $players = video_utility::getVideoPlayers();
+  $flv_players = video_video_flv_players();
+  $html5_players = video_video_html5_players();
+  foreach($extensions as $ext => $player)
+  {
+    variable_set('video_extension_'.$ext,'video_play_html5');
+    variable_set('video_extension_' . $ext . '_html5_player', 'videojs');
+  }
+  // If we're in distribution context, refresh the strings and translations.
+  if (function_exists('opigno_lms_refresh_strings_and_import')) {
+    opigno_lms_refresh_strings_and_import(array('field'));
+  }
+  // Enable Opigno Video plugin.
+  _opigno_video_app_enable_video_plugin();
+  // Enable Opigno Video filter.
+  _opigno_video_app_enable_video_filter();
+}
+
+/**
+ * Hook_uninstall.
+ */
+function opigno_video_app_uninstall() {
+  node_type_delete('video');
+}
+
+/**
+ * Alters the og_group_ref_instance().
+ */
+function opigno_video_app_update_og_group_ref() {
+  if (module_exists("entityreference_prepopulate")) {
+    $instance = field_info_instance('node', 'og_group_ref', 'video');
+    if (!empty($instance)) {
+      $instance['default_value_function'] = 'entityreference_prepopulate_field_default_value';
+      $instance['settings']['behaviors']['prepopulate'] = array(
+        'action' => 'none',
+        'action_on_edit' => 0,
+        'fallback' => 'none',
+        'og_context' => 0,
+        'skip_perm' => 0,
+        'status' => 1,
+      );
+    }
+      $instance['display']=array(
+        'default' => array(
+          'label' => 'hidden',
+          'settings' => array(),
+          'weight' => 1,
+          'type' => 'hidden'
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'settings' => array(),
+          'type' => 'hidden',
+        ),
+      );
+      field_update_instance($instance);
+  }
+}
+
+/**
+ * Alters the og_group_ref_instance().
+ */
+function opigno_video_app_update_og_content_access() {
+    $instance = field_info_instance('node', 'group_content_access', 'video');
+    if (!empty($instance)) {
+      $instance['display']=array(
+        'default' => array(
+          'label' => 'hidden',
+          'settings' => array(),
+          'weight' => 1,
+          'type' => 'hidden'
+        ),
+        'teaser' => array(
+          'label' => 'hidden',
+          'settings' => array(),
+          'type' => 'hidden',
+        ),
+      );
+      field_update_instance($instance);
+    }
+}
+
+/**
+ * Sets the default permissions.
+ */
+function opigno_video_app_permissions_set() {
+  // In distribution context.
+  if (defined('OPIGNO_LMS_COURSE_STUDENT_ROLE')) {
+    $course_admin = opigno_lms_get_role_id(OPIGNO_LMS_COURSE_ADMIN_ROLE);
+    $course_coach = opigno_lms_get_role_id(OPIGNO_LMS_COURSE_COACH_ROLE);
+    $course_teacher = opigno_lms_get_role_id(OPIGNO_LMS_COURSE_TEACHER_ROLE);
+    $course_student = opigno_lms_get_role_id(OPIGNO_LMS_COURSE_STUDENT_ROLE);
+    $course_moderator = opigno_lms_get_role_id(OPIGNO_LMS_COURSE_MODERATOR_ROLE);
+
+    og_role_grant_permissions($course_admin, array(
+      'delete any video content',
+      'update any video content',
+      'delete own video content',
+      'update own video content',
+      'create video content',
+      'access video content',
+      'sort videos',
+    ));
+    og_role_grant_permissions($course_coach, array(
+      'delete own video content',
+      'update own video content',
+      'create video content',
+      'access video content',
+      'sort videos',
+    ));
+    og_role_grant_permissions($course_teacher, array(
+      'delete own video content',
+      'update own video content',
+      'create video content',
+      'access video content',
+      'sort videos',
+    ));
+    og_role_grant_permissions($course_student, array('access video content'));
+    og_role_grant_permissions($course_moderator, array('access video content'));
+
+    $administrator = user_role_load_by_name('administrator');
+    $administrator_permissions = array(
+      'create video content',
+      'edit own video content',
+      'edit any video content',
+      'delete own video content',
+      'delete any video content',
+    );
+    user_role_grant_permissions($administrator->rid, $administrator_permissions);
+
+    $authenticated = user_role_load_by_name('authenticated user');
+    $authenticated_permissions = array('edit own video content');
+    user_role_grant_permissions($authenticated->rid, $authenticated_permissions);
+
+    $forum_admin = user_role_load_by_name('forum administrator');
+    $forum_admin_permissions = array('edit own video content');
+    user_role_grant_permissions($forum_admin->rid, $forum_admin_permissions);
+
+    $student_manager = user_role_load_by_name('student manager');
+    $student_manager_permissions = array(
+      'create video content',
+      'edit own video content',
+      'delete own video content',
+    );
+    user_role_grant_permissions($student_manager->rid, $student_manager_permissions);
+  }
+}
+
+/**
+ * Implements hook_schema().
+ */
+function opigno_video_app_schema() {
+  return array(
+    'opigno_video_app_video_sort' => array(
+      'fields' => array(
+        'gid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'video_nid' => array(
+          'type' => 'int',
+          'unsigned' => TRUE,
+          'not null' => TRUE,
+        ),
+        'weight' => array(
+          'type' => 'int',
+          'not null' => TRUE,
+          'default' => '0',
+        ),
+      ),
+      'indexes' => array(
+        'video_group_id' => array('gid'),
+        'video_video_id' => array('video_nid'),
+      ),
+    ),
+  );
+}
+
+/**
+ * Enable/disable Video plugins/filters.
+ */
+function opigno_video_app_update_7001() {
+  // Enable Opigno Video plugin.
+  _opigno_video_app_enable_video_plugin();
+  // Enable Opigno Video filter.
+  _opigno_video_app_enable_video_filter();
+  // Disable Video plugin.
+  _opigno_video_app_disable_video_plugin();
+}
+
+/**
+ * Enable Opigno Video plugin.
+ */
+function _opigno_video_app_enable_video_plugin() {
+  // Get current saved settings.
+  $ckeditor_settings_query = db_select('wysiwyg', 'w')
+    ->fields('w', array('settings'))
+    ->condition('w.format', 'html')
+    ->condition('w.editor', 'ckeditor')
+    ->execute()
+    ->fetchField();
+  if (!empty($ckeditor_settings_query)) {
+    $ckeditor_settings = unserialize($ckeditor_settings_query);
+    if (!empty($ckeditor_settings['buttons'])) {
+      // Enable Opigno Video plugin.
+      $ckeditor_settings['buttons']['drupal']['opigno_video'] = 1;
+      // Insert new profile data.
+      db_update('wysiwyg')
+        ->condition('format', 'html')
+        ->condition('editor', 'ckeditor')
+        ->fields(array(
+          'settings' => serialize($ckeditor_settings),
+        ))
+        ->execute();
+    }
+  }
+  wysiwyg_profile_cache_clear();
+}
+
+/**
+ * Enable Opigno Video filter.
+ */
+function _opigno_video_app_enable_video_filter() {
+  // Video filter settings.
+  $opigno_video_filter_settings = array(
+    'status' => 1,
+    'weight' => 1,
+  );
+
+  // Load format and filters.
+  $format = filter_format_load('html');
+  $filters = filter_list_format('html');
+  // Transform filter to array.
+  foreach ($filters as $filter_name => $filter_opts) {
+    $filters[$filter_name] = (array) $filter_opts;
+  }
+  // Add settings for Opigno Video filter.
+  $filters['opigno_video'] = $opigno_video_filter_settings;
+  $format->filters = $filters;
+  // Save format with enabled filter.
+  filter_format_save($format);
+}
+
+/**
+ * Disable Video plugin.
+ */
+function _opigno_video_app_disable_video_plugin() {
+  // Get current saved settings.
+  $ckeditor_settings_query = db_select('wysiwyg', 'w')
+    ->fields('w', array('settings'))
+    ->condition('w.format', 'html')
+    ->condition('w.editor', 'ckeditor')
+    ->execute()
+    ->fetchField();
+  if (!empty($ckeditor_settings_query)) {
+    $ckeditor_settings = unserialize($ckeditor_settings_query);
+    if (!empty($ckeditor_settings['buttons'])) {
+      // Disable Video plugin.
+      unset($ckeditor_settings['buttons']['drupal']['video']);
+      // Insert new profile data.
+      db_update('wysiwyg')
+        ->condition('format', 'html')
+        ->condition('editor', 'ckeditor')
+        ->fields(array(
+          'settings' => serialize($ckeditor_settings),
+        ))
+        ->execute();
+    }
+  }
+  wysiwyg_profile_cache_clear();
+}

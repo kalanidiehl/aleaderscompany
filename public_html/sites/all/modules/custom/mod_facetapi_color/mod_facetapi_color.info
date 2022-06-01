@@ -1,0 +1,7 @@
+name = Facetapi Colors
+description = Displays search facets as a colors widget.
+package = Custom module - Required
+core = 7.x
+dependencies[] = facetapi
+files[] = plugins/facetapi/facetapi_color.inc
+version = "1.x"

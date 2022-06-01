@@ -1,0 +1,24 @@
+<?php
+
+/**
+ * @file
+ * Module install logic.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function opigno_commerce_app_install() {
+  $commerceproducttype=commerce_product_type_load('og_product');
+  if (empty($commerceproducttype))
+  {
+    commerce_product_ui_product_type_save(array(
+    'is_new' => TRUE,
+    'type' => 'og_product',
+    'name' => 'OG product',
+    'description' => 'Product type linked to groups. Allows users to buy access to certain OG.',
+    'help' => '',
+    'revision' => 1,
+  ), TRUE);
+  }
+}

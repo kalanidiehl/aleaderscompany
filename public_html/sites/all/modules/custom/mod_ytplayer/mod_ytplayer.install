@@ -1,0 +1,49 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+/**
+ * Implements hook_install().
+ */
+function mod_ytplayer_install() {
+  $data_type = Database::getConnection()->databaseType();
+  switch ($data_type) {
+    case 'mysql':
+    case 'mysqli':
+      db_query("CREATE TABLE IF NOT EXISTS {mod_ytplayer} (
+                `id` int(11) NOT NULL AUTO_INCREMENT,
+                `name` varchar(255) NOT NULL,
+                `settings` text NOT NULL,
+                `data` longtext NOT NULL,
+                PRIMARY KEY (`id`)
+              ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+              ");
+      break;
+    case 'pgsql':
+      break;
+  }
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function mod_ytplayer_uninstall() {
+  /*
+   *variable_del('upload_file_types');
+   */
+   $data_type = Database::getConnection()->databaseType();
+  switch ($data_type) {
+    case 'mysql':
+    case 'mysqli':
+		db_query("DROP TABLE {mod_ytplayer}");
+    break;
+
+    case 'pgsql':
+    break;
+
+	}
+}

@@ -1,0 +1,49 @@
+	/*
+  	lli-flaticon icon font: lli-flaticon
+  	Creation date: 24/11/2017 04:29
+  	*/
+
+@font-face {
+  font-family: "lli-flaticon";
+  src: url("./lli-flaticon.eot");
+  src: url("./lli-flaticon.eot?#iefix") format("embedded-opentype"),
+       url("./lli-flaticon.woff") format("woff"),
+       url("./lli-flaticon.ttf") format("truetype"),
+       url("./lli-flaticon.svg#lli-flaticon") format("svg");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  @font-face {
+    font-family: "lli-flaticon";
+    src: url("./lli-flaticon.svg#lli-flaticon") format("svg");
+  }
+}
+
+[class^="lli-flaticon-"]:before, [class*=" lli-flaticon-"]:before,
+[class^="lli-flaticon-"]:after, [class*=" lli-flaticon-"]:after {   
+  font-family: lli-flaticon;
+        font-size: 20px;
+font-style: normal;
+
+}
+
+.lli-flaticon-man-wearing-business-attire-with-suitcase-in-a-city:before { content: "\f100"; }
+.lli-flaticon-businessman-discussing-a-business-report:before { content: "\f101"; }
+.lli-flaticon-business-2:before { content: "\f102"; }
+.lli-flaticon-people-3:before { content: "\f103"; }
+.lli-flaticon-people-2:before { content: "\f104"; }
+.lli-flaticon-two:before { content: "\f105"; }
+.lli-flaticon-award:before { content: "\f106"; }
+.lli-flaticon-graduation:before { content: "\f107"; }
+.lli-flaticon-computer-1:before { content: "\f108"; }
+.lli-flaticon-computer:before { content: "\f109"; }
+.lli-flaticon-connection:before { content: "\f10a"; }
+.lli-flaticon-business-1:before { content: "\f10b"; }
+.lli-flaticon-people-1:before { content: "\f10c"; }
+.lli-flaticon-book:before { content: "\f10d"; }
+.lli-flaticon-conference-hall:before { content: "\f10e"; }
+.lli-flaticon-distance-courses:before { content: "\f10f"; }
+.lli-flaticon-people:before { content: "\f110"; }
+.lli-flaticon-business:before { content: "\f111"; }

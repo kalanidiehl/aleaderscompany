@@ -1,0 +1,28 @@
+# Japanese translation of Inline Conditions (7.x-1.0-alpha7)
+# Copyright (c) 2016 by the Japanese translation team
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Inline Conditions (7.x-1.0-alpha7)\n"
+"POT-Creation-Date: 2016-01-16 01:44+0000\n"
+"PO-Revision-Date: YYYY-mm-DD HH:MM+ZZZZ\n"
+"Language-Team: Japanese\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+msgid "Remove"
+msgstr "削除"
+msgid "Settings"
+msgstr "設定"
+msgid "OR"
+msgstr "OR"
+msgid "Rules"
+msgstr "ルール"
+msgid "AND"
+msgstr "AND"
+msgid "Negate"
+msgstr "否定"
+msgid "- All -"
+msgstr "- 全て -"

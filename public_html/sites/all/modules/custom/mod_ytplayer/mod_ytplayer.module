@@ -1,0 +1,262 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+/**
+ * Implements hook_menu().
+ */
+function mod_ytplayer_menu() {
+  $module_path = drupal_get_path('module', 'mod_ytplayer');
+  $items['admin/structure/ytplayer'] = array(
+    'title' => t('Administrator yplayer'),
+    'description' => t('Configure whate block get ytplayer'),
+    'page callback' => 'mod_ytplayer_list',
+    'access arguments' => array('admin_yplayer_list'),
+    'type' => MENU_NORMAL_ITEM
+  );
+  $items['admin/structure/ytplayer/add'] = array(
+    'title' => t('Add Block ytplayer'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mode_ytplayer_add'),
+    'access arguments' => array('admin_ytplayer_add'),
+    'type' => MENU_LOCAL_ACTION,
+    'file path' => $module_path . '/includes',
+    'file' => 'mod_ytplayer_add.admin.inc',
+    );
+  $items['admin/structure/ytplayer/%/edit'] = array(
+     'title' => t('Edit Block ytplayer'),
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('mode_ytplayer_add'),
+    'access arguments' => array('admin_ytplayer_add'),
+    'type' => MENU_CALLBACK,
+    'file path' => $module_path . '/includes',
+    'file' => 'mod_ytplayer_add.admin.inc',
+    );
+  $items['admin/structure/ytplayer/%/settings'] = array(
+     'title' => t('Setting ytPlayer Video'),
+     'page callback' => 'drupal_get_form',
+     'page arguments' => array('mod_ytplayer_settings',3),
+     'access arguments' => array('admin_ytplayer_setting'),
+     'type' => MENU_CALLBACK,
+     'context' => MENU_CONTEXT_INLINE,
+     'file path' => $module_path .'/includes',
+     'file' => 'mod_ytplayer_setting.admin.inc',
+  );
+  $items['admin/structure/ytplayer/%/delete'] = array(
+     'title' => t('Delete ytPlayer Video'),
+     'page callback' => 'mod_ytplayer_delete',
+     'page arguments' => array(3),
+     'access arguments' => array('admin_ytplayer_setting'),
+     'type' => MENU_CALLBACK,
+     'file path' => $module_path .'/includes',
+     'file' => 'mod_ytplayer_add.admin.inc',
+  );
+  return $items;
+}
+
+/**
+ * Implements hook_init().
+ */
+function mod_ytplayer_init() {
+  $module_path = drupal_get_path('module', 'mod_ytplayer');
+  drupal_add_css($module_path.'/css/YTPlayer.css');
+  drupal_add_js($module_path.'/js/jquery.mb.YTPlayer.min.js');
+}
+
+/**
+ * Implements hook_permission().
+ */
+function mod_ytplayer_permission() {
+  $items = array();
+  $items['admin_yplayer_list'] = array(
+      'title' => t('Adminstrator list block Yplayer'),
+      'description' => t('Allow roles view list Yplayer')
+    );
+  $items['admin_ytplayer_add'] = array(
+      'title' => t('Adminstrator Yplayer add block'),
+      'description' => t('Allow roles add Ytplayer block')
+    );
+  $items['admin_ytplayer_setting'] = array(
+      'title' => t('Administrator Ytplayer Settings'),
+      'description' => t('Allow roles setting Ytplayer by Block')
+    );
+  return $items;
+
+}
+/*
+ *  Implement hook_help()
+ *  @param $path
+ *  @param $arg
+ */
+function mod_ytplayer_help($path, $arg)
+{
+    $output = '';
+    switch ($path){
+        case 'admin/help#mod_ytplayer':
+        case 'admin/structure/ytplayer':
+            $output = '<p>'.  t("Embed configurable Video player in your site (also compatible with mobile devices)") .'</p>';
+            break;
+    }
+}
+
+function mod_ytplayer_list()
+{
+    $header = array('ID', 'Name', 'Edit', 'Settings','Delete');
+    $results = db_select('{mod_ytplayer}', 'm')
+            ->fields('m', array('id', 'name'))
+            ->execute();
+    $rows = array();
+    foreach ($results as $row) {
+        $row->name = $row->name;
+        $row->edit = l(t('Edit'), 'admin/structure/ytplayer/' . $row->id . '/edit');
+        $row->settings = l(t('Settings'), 'admin/structure/ytplayer/' . $row->id . '/settings');
+        $row->delete = l(t('Delete'), 'admin/structure/ytplayer/' . $row->id . '/delete');
+        $tmp = (array) $row;
+        $rows[] = $tmp;
+    }
+
+    return theme_table(array(
+        'header' => $header,
+        'rows' => $rows,
+        'attributes' => array(),
+        'caption' => '',
+        'colgroups' => array(),
+        'sticky' => false,
+        'empty' => t('No slider created yet.')
+    ));
+}
+
+function mod_ytplayer_theme()
+{
+    $items = array();
+    $items['theme_ytplayer'] = array(
+        'render element' => 'element',
+        'template' => 'block-ytplayer',
+        'variables' => array(
+            'mute' => NULL,
+            'showcontrols' => NULL,
+            'quality' => NULL,
+            'autoplay' => NULL,
+            'loop' => NULL,
+            'showytlogo' => NULL
+        )
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_block_info().
+ *
+ * This hook declares what blocks are provided by the module.
+ */
+function mod_ytplayer_block_info()
+{
+    $blocks = array();
+    $list_ytplayer = list_all_ytplayer();
+     foreach($list_ytplayer as $row )
+     {
+         $blocks['block_yplayer_'.$row->id] = array(
+             'info' => 'Block '.$row->name,
+             'cache' => DRUPAL_NO_CACHE
+         );
+     }
+    return $blocks;
+}
+
+/**
+ * Implements hook_block_view().
+ *
+ * This hook generates the contents of the blocks themselves.
+ */
+
+
+function mod_ytplayer_block_view($delta= '')
+{
+
+    $list_ytplayer = list_all_ytplayer();
+    foreach($list_ytplayer as $row)
+    {
+        $name_block = 'block_yplayer_'.$row->id;
+        $settings = json_decode(base64_decode($row->settings));
+        $data = json_decode(base64_decode($row->data));
+        if( $delta == $name_block)
+        {
+
+            $variables = array(
+                'text_body' => isset($data->body->value) ? check_markup($data->body->value,$data->body->format) : '' ,
+                'video' => file_load($data->video),
+                'thumnail' => file_load($data->thumnail),
+                'fullvideo' => isset($settings->fullscreen_ytplayer) ? $settings->fullscreen_ytplayer : 0,
+                'mute' => isset($settings->mute_ytplayer) ? $settings->mute_ytplayer : 0 ,
+                'showcontrols' => isset($settings->showcontrols_ytplayer) ? $settings->showcontrols_ytplayer : 'false',
+                'quality' => isset($settings->quality_ytplayer) ? $settings->quality_ytplayer : 'default',
+                'autoplay' => isset($settings->autoplay_ytplayer) ? $settings->autoplay_ytplayer : 'false' ,
+                'loop' => isset($settings->loop_ytplayer) ? $settings->loop_ytplayer : 'false',
+                'showytlogo' => isset($settings->showytlogo_ytplayer) ? $settings->showytlogo_ytplayer : 'false',
+            );
+
+            $block['subject'] = '';
+            $block['content'] = theme('theme_ytplayer',$variables);
+            drupal_add_js(drupal_get_path('module','mod_ytplayer').'/js/Playvideo.js',array('group'=>JS_THEME));
+        }
+    }
+
+    return $block;
+}
+
+function template_preprocess_theme_ytplayer(&$variables)
+{
+    $variables['video'] = file_create_url($variables['video']->uri);
+    $variables['thumnail'] = file_create_url($variables['thumnail']->uri);
+    $variables['classes_array'][] = 'video-banner';
+    $variables['classes_array'][] = 'text-center' ;
+    if($variables['fullvideo'] == 1)
+    {
+       $variables['classes_array'][] = 'video-fullscreen';
+    }
+    $variables['classes'] = drupal_attributes($variables['classes_array']);
+}
+
+function list_all_ytplayer()
+{
+    $result = array();
+    $query = db_select('mod_ytplayer', 'm')
+            ->fields('m')
+            ->execute();
+    foreach($query as $row)
+    {
+        $result[] = $row;
+    }
+    return $result;
+}
+
+function get_ytplayer_by_id($id)
+{
+    $result = array();
+    $query = db_select('mod_ytplayer','m')
+             ->condition('id',$id,'=')
+            ->fields('m')
+            ->execute();
+    foreach($query as $row)
+    {
+        $result = $row;
+    }
+    return $result;
+}
+
+
+/**
+ * Implements hook_cron().
+ */
+function mod_ytplayer_cron() {
+   $list_ytplayer = list_all_ytplayer();
+   foreach($list_ytplayer as $row )
+     {
+         $blocks ='block_yplayer_'.$row->id;
+     }
+
+}
+

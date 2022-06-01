@@ -1,0 +1,256 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: local-admin
+ * Date: 8/28/2017
+ * Time: 11:32 AM
+ */
+/**
+ * Implements hook_form_BASE_FORM_alter().
+ */
+function lli_custom_module_form_node_form_alter(&$form, &$form_state, $form_id) {
+  // Hide paper size/orientation fields added by Print module.
+  if (!empty($form['print']['print_pdf'])) {
+    foreach ($form['print']['print_pdf'] as &$print_field) {
+      $print_field['#access'] = FALSE;
+    }
+  }
+}
+
+function lli_custom_module_menu_link_alter(&$item) {
+  $item['options']['alter'] = TRUE;
+}
+
+/**
+ * @param $item
+ * @param $map
+ */
+/**
+ * Implements hook_preprocess().
+ */
+function lli_custom_module_preprocess_menu_link(&$variables, $hook) {
+
+
+  if ($variables['element']['#original_link']['mlid'] == 5030) { //my account link
+
+
+    $roles = [
+      'Client - Training',
+      'Client - Consulting',
+      'Client - Coaching',
+      'Client - Membership',
+    ];
+    if (count(array_intersect($roles, $GLOBALS['user']->roles)) > 0) {
+      $variables['element']['#href'] = 'client_dashboard';
+    }
+
+    $roles = [
+      'Coach',
+    ];
+    if (count(array_intersect($roles, $GLOBALS['user']->roles)) > 0) {
+      $variables['element']['#href'] = 'manager_dashboard';
+    }
+
+    if (in_array("administrator", $GLOBALS['user']->roles)) {
+      $variables['element']['#href'] = 'admin_dashboard';
+    }
+
+  }
+
+
+}
+
+function lli_custom_module_field_widget_form_alter(&$element, $form_state, $context) {
+  if (!empty($element['#addressfield'])) {
+    $element['country']['#weight'] = -1;
+  }
+}
+
+/**
+ * Implements hook_access().
+ */
+/**
+ * Implements hook_preprocess().
+ */
+/**
+ * Implements hook_node_load().
+ */
+function lli_custom_module_node_load($nodes, $types) {
+  if ($types[0] == "h5p_content") {
+    foreach ($nodes as $node) {
+      break;
+    }
+    if (isset($node->field_timer['und'][0]['value'])) {
+      //we have a timer now
+      $quiz_timer = $node->field_timer['und'][0]['value'];
+      //print "QUIZ TIMER: " . $quiz_timer;
+    }
+
+  }
+
+}
+
+function lli_custom_module_commerce_cart_attributes_refresh_alter(&$commands, $form, $form_state) {
+
+  if (!empty($form_state['context'])) {
+
+    $product = $form_state['default_product'];
+    if ($product->type == 'product') { //check to ensure this only happens for courses which is product type of "product"
+
+      //if pre-requisites are empty then remove - check this later when we get into multilingual to ensure it still works
+      if (isset($product->field_course_prerequisites['und'])) {
+        $commands[] = ajax_command_invoke('#cart_prerequisites', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_prerequisites', addClass, ['hiddenbox']);
+      }
+
+      if ((isset($product->field_coaching_hours['und'])) || (isset($product->field_course_coachmonitor['und']))) {
+        $commands[] = ajax_command_invoke('#cart_coaching', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_coaching', addClass, ['hiddenbox']);
+      }
+
+      if (isset($product->field_course_focus['und'])) {
+        $commands[] = ajax_command_invoke('#cart_focus', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_focus', addClass, ['hiddenbox']);
+      }
+
+      if (isset($product->field_course_overview['und'])) {
+        $commands[] = ajax_command_invoke('#cart_overview', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_overview', addClass, ['hiddenbox']);
+      }
+
+      if (isset($product->field_course_expectations['und'])) {
+        $commands[] = ajax_command_invoke('#cart_expectations', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_expectations', addClass, ['hiddenbox']);
+      }
+
+      if (isset($product->field_course_recert['und'])) {
+        $commands[] = ajax_command_invoke('#cart_recertification', removeClass, ['hiddenbox']);
+      }
+      else {
+        $commands[] = ajax_command_invoke('#cart_recertification', addClass, ['hiddenbox']);
+      }
+
+    }
+  }
+
+}
+
+
+/**
+ * Implements hook_form_alter().
+ */
+function lli_custom_module_form_alter(&$form, &$form_state, $form_id) {
+  if ($form_id == 'webform_client_form_487') {
+    $user = user_load($GLOBALS['user']->uid);
+    $current_path = explode('/', drupal_get_path_alias());
+    if (($current_path[0] == 'node') && ($current_path[2] == 'take')) {
+      $node = node_load($current_path[1]);
+      $form['submitted']['module']['#value'] = $node->title;
+
+      $quiz_session_variable = 'quiz_' . $current_path[1];
+      if ((isset($_SESSION[$quiz_session_variable])) && ($_SESSION[$quiz_session_variable]['previous_quiz_questions'] != NULL)) {
+        $last_page = end($_SESSION[$quiz_session_variable]['previous_quiz_questions']);
+        if ($last_page != NULL) {
+          $current_page = ($last_page['number']) + 1;
+
+          foreach ($_SESSION[$quiz_session_variable]['quiz_questions'] as $quiz_question) {
+            if ($quiz_question['number'] == $current_page) {
+              $lesson_page = node_load($quiz_question['nid']);
+            }
+
+          }
+
+
+          if (isset($lesson_page)) {
+            $form['submitted']['lesson_page']['#value'] = $lesson_page->title;
+          }
+        }
+      }
+    }
+
+    //find out which page we are on
+
+
+    if (isset($user->field_course_enrollment)) {
+      foreach ($user->field_course_enrollment as $items) {
+        foreach ($items as $item) {
+          $enrollment = field_collection_field_get_entity($item);
+        }
+
+        //check if this enrollment matches the context of the current OG for the node then we are enrolled in it
+        if (!empty($enrollment->opigno_class_courses)) {
+          if ($enrollment->opigno_class_courses['und'][0]['target_id'] == $_SESSION['og_context']['gid']) {
+            //get the belt level from the user's enrollment
+            $belt_level = taxonomy_term_load($enrollment->field_belt_color['und'][0]['tid']);
+            $form['submitted']['belt_level']['#value'] = $belt_level->name;
+
+            //get the coach's email
+            if (isset($enrollment->field_coach['und'][0]['target_id'])) {
+              $coach = user_load($enrollment->field_coach['und'][0]['target_id']);
+
+              $form['submitted']['coach_email']['#value'] = $coach->mail;
+              $form['submitted']['coach_name']['#value'] = $coach->field_address['und'][0]['name_line'];
+            }
+          }
+        }
+
+      }
+      $form['submitted']['subject']['#value'] = $form['submitted']['course_name']['#value'] . " [Question from Student]";
+
+    }
+
+  }
+
+
+}
+
+
+function lli_custom_module_course_nav($course_nid, $account = NULL) {
+  if ($account == NULL) {
+    Global $user;
+    $account = $user;
+    $uid = $account->uid;
+  }
+  $lessons = opigno_quiz_app_course_lessons($course_nid);
+  $lessons_ = [];
+  foreach ($lessons as $course_nid => $quizs) {
+    foreach ($quizs as $quiz_id => $quiz) {
+      $subnav = course_get_module_sections([$quiz_id], $uid);
+
+      $lessons_[$course_nid][$quiz['vid']]->title = 'title';
+      $lessons_[$course_nid][$quiz['vid']]->link = 'link';
+    }
+  }
+  $navigation = NULL;
+  return $navigation;
+}
+
+function course_get_module_sections($nids, $uid) {
+  $sections = [];
+  $query = db_select('node', 'n');
+  $query->leftJoin('quiz_node_properties', 'p', 'n.vid = p.vid');
+  $query->addField('n', 'title', 'section_title');
+
+  $result = $query
+    ->fields('n', ['title', 'nid'])
+    ->condition('n.uid', $uid)
+    ->condition('n.nid', $nids, 'IN')
+    ->execute();
+
+  while ($sections = $result->fetchObject()) {
+    //$scores[$score->nid][$score->result_id] = $score;
+  }
+
+  return $sections;
+}
+

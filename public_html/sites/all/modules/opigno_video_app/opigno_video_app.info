@@ -1,0 +1,20 @@
+name = Opigno Video App
+description = Opigno Video App
+core = 7.x
+package = Opigno Apps
+
+files[] = views/opigno_video_app_field_course_video_weight.inc
+files[] = views/opigno_video_app_sort_course_video_weight.inc
+
+dependencies[] = video
+dependencies[] = views
+dependencies[] = og
+dependencies[] = video_ui
+dependencies[] = videojs
+
+; Information added by Drupal.org packaging script on 2017-02-08
+version = "7.x-1.7"
+core = "7.x"
+project = "opigno_video_app"
+datestamp = "1486550884"
+

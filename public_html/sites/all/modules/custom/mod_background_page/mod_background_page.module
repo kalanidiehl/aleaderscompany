@@ -1,0 +1,136 @@
+<?php
+
+@include_once(drupal_get_path("module","mod_background_page")."/inc/mod_background_page.classec.inc");
+
+/**
+ * Implements hook_menu().
+ */
+function mod_background_page_menu()
+{
+    $item['admin/structure/background-page'] = array(
+        'title' => t('Background Page'),
+        'description' => t('Show List page used background'),
+        'page callback' => 'mod_background_page_list',
+        'access arguments' => array('mod_background_page_overview'),
+        'file' => 'mod_background_page.admin.inc',
+        'file path' => drupal_get_path('module','mod_background_page').'/inc',
+        'type' => MENU_NORMAL_ITEM,
+    );
+    $item["admin/structure/background-page/add"] = array(
+        "title" => t("Create new Background page"),
+        "description" => t("Create background page"),
+        "page callback" => "drupal_get_form",
+        "page arguments" => array("mod_background_page_configure_form"),
+        "access arguments" => array("administer full-mod-background-page"),
+        "file" => "mod_background_page.admin.inc",
+        "file path" => drupal_get_path('module','mod_background_page').'/inc',
+        "type" => MENU_LOCAL_ACTION,
+    );
+    $item["admin/structure/background-page/%/edit"] = array(
+        "title" => t("Edit"),
+        'description' => t('Edit background page'),
+        "page callback" => "drupal_get_form",
+        "page arguments" => array('mod_background_page_configure_form',3),
+        "access arguments" => array("administer full-mod-background-page"),
+        "file" => "mod_background_page.admin.inc",
+        "file path" => drupal_get_path('module','mod_background_page').'/inc',
+    );
+
+    $item["admin/structure/background-page/%/delete"] = array(
+        'title' => t('Delete record Background Page'),
+        'page callback' => array("mod_background_page_delete"),
+        'page arguments' => array(3),
+        'access arguments' => array("administer full-mod-background-page"),
+        "file" => "mod_background_page.admin.inc",
+        "file path" => drupal_get_path('module','mod_background_page').'/inc',
+        'type' => MENU_CALLBACK
+    );
+
+    $item['admin/structure/background-page/config-default'] = array(
+        "title" => t("Configure Default Background all Page"),
+        "description" => t("Configure Default Background all Page"),
+        "page callback" => "drupal_get_form",
+        "page arguments" => array("mod_background_page_configure_default_form"),
+        "access arguments" => array("administer full-mod-background-page"),
+        "file" => "mod_background_page.admin.inc",
+        "file path" => drupal_get_path('module','mod_background_page').'/inc',
+        "type" => MENU_LOCAL_ACTION,
+    );
+    return $item;
+}
+
+/**
+ * Implements hook_block_info().
+ */
+function mod_background_page_block_info()
+{
+    $block  = array();
+    $block['mod_block_background'] = array(
+        'info' => t('Mod Block Background'),
+        'cache' => DRUPAL_NO_CACHE
+    );
+    return $block;
+}
+
+/**
+ * Implements hook_block_view().
+ */
+function mod_background_page_block_view($delta = '')
+{
+    if($delta == 'mod_block_background')
+    {
+        if(variable_get('mod_background_default_page')) {
+            $background_default = variable_get('mod_background_default_page', '');
+        }
+        $background = MDBackgroundPage::check_url();
+        if(isset($background)) {
+            $data = json_decode(base64_decode($background->data));
+            $fid = $data->settings->fid;
+        }
+        $block['title']   = '';
+        $block['content'] = array(
+            '#markup' => isset($background) ? theme('mod_background',array('background' => $background,'fid' => $fid)) : theme('mod_background',array('background' => NULL,'fid' => $background_default)),
+
+        );
+    }
+    return $block;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function mod_background_page_theme()
+{
+    $item['mod_background'] = array(
+        'variables' => array('background' => NULL,'fid' => NULL),
+        'template'  => 'block-mod-background',
+        'path'      => drupal_get_path('module','mod_background_page').'/theme',
+    );
+
+    return $item;
+}
+function mod_background_page_preprocess_page(&$variables){
+
+}
+function mod_background_page_preprocess_mod_background(&$vars)
+{
+    $breadcrumb = array();
+    $breadcrumb[] = l('Home', '<front>');
+    $breadcrumb[] = drupal_get_title();
+    drupal_set_breadcrumb($breadcrumb);
+    drupal_add_js(drupal_get_path('module','mod_background_page').'/js/jquery.fullscreenBackground.js');
+    drupal_add_css(drupal_get_path('module','mod_background_page').'/css/mod_background.css');
+    drupal_add_js(drupal_get_path('module','mod_background_page').'/js/mod_background.js');
+    $vars['title_page'] = drupal_get_title();
+    $vars['breadcrumbs'] = theme('breadcrumb', array('breadcrumb' => drupal_get_breadcrumb()));
+    $background = $vars['background'];
+    $file = file_load($vars['fid']);
+    $vars['img_url'] = file_create_url($file->uri);
+
+}
+function mod_background_page_render_block($module, $delta) {
+    $block_render = block_load($module, $delta);
+    return isset($block_render->theme) ? _block_get_renderable_array(_block_render_blocks(array($block_render))) : array();
+
+}
+

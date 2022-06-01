@@ -1,0 +1,4 @@
+name = Forums Dashboard
+description = Create a block to display forum information
+core = 7.x
+dependencies[] = advanced_forum

@@ -1,0 +1,808 @@
+0 info it worked if it ends with ok
+1 verbose cli [ 'C:\\Program Files\\nodejs\\node.exe',
+1 verbose cli   'C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js',
+1 verbose cli   'install',
+1 verbose cli   '--scripts-prepend-node-path=auto' ]
+2 info using npm@3.9.3
+3 info using node@v6.2.1
+4 silly loadCurrentTree Starting
+5 silly install loadCurrentTree
+6 silly install readLocalPackageData
+7 silly install normalizeTree
+8 silly loadCurrentTree Finishing
+9 silly loadIdealTree Starting
+10 silly install loadIdealTree
+11 silly cloneCurrentTree Starting
+12 silly install cloneCurrentTreeToIdealTree
+13 silly cloneCurrentTree Finishing
+14 silly loadShrinkwrap Starting
+15 silly install loadShrinkwrap
+16 silly loadShrinkwrap Finishing
+17 silly loadAllDepsIntoIdealTree Starting
+18 silly install loadAllDepsIntoIdealTree
+19 silly fetchNamedPackageData phantomjs
+20 silly mapToRegistry name phantomjs
+21 silly mapToRegistry using default registry
+22 silly mapToRegistry registry https://registry.npmjs.org/
+23 silly mapToRegistry data Result {
+23 silly mapToRegistry   raw: 'phantomjs',
+23 silly mapToRegistry   scope: null,
+23 silly mapToRegistry   name: 'phantomjs',
+23 silly mapToRegistry   rawSpec: '',
+23 silly mapToRegistry   spec: 'latest',
+23 silly mapToRegistry   type: 'tag' }
+24 silly mapToRegistry uri https://registry.npmjs.org/phantomjs
+25 verbose request uri https://registry.npmjs.org/phantomjs
+26 verbose request no auth needed
+27 info attempt registry request try #1 at 5:02:53 PM
+28 verbose request id 5281216c9bdec9b5
+29 http request GET https://registry.npmjs.org/phantomjs
+30 http 200 https://registry.npmjs.org/phantomjs
+31 verbose headers { server: 'nginx/1.10.3',
+31 verbose headers   'content-type': 'application/json',
+31 verbose headers   'last-modified': 'Wed, 19 Jul 2017 01:40:37 GMT',
+31 verbose headers   etag: 'W/"596eb895-1b4c5"',
+31 verbose headers   'content-encoding': 'gzip',
+31 verbose headers   'cache-control': 'max-age=300',
+31 verbose headers   'content-length': '12340',
+31 verbose headers   'accept-ranges': 'bytes',
+31 verbose headers   date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+31 verbose headers   via: '1.1 varnish',
+31 verbose headers   age: '160',
+31 verbose headers   connection: 'keep-alive',
+31 verbose headers   'x-served-by': 'cache-yyz8326-YYZ',
+31 verbose headers   'x-cache': 'HIT',
+31 verbose headers   'x-cache-hits': '1',
+31 verbose headers   'x-timer': 'S1501275776.696954,VS0,VE0',
+31 verbose headers   vary: 'Accept-Encoding, Accept' }
+32 silly get cb [ 200,
+32 silly get   { server: 'nginx/1.10.3',
+32 silly get     'content-type': 'application/json',
+32 silly get     'last-modified': 'Wed, 19 Jul 2017 01:40:37 GMT',
+32 silly get     etag: 'W/"596eb895-1b4c5"',
+32 silly get     'content-encoding': 'gzip',
+32 silly get     'cache-control': 'max-age=300',
+32 silly get     'content-length': '12340',
+32 silly get     'accept-ranges': 'bytes',
+32 silly get     date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+32 silly get     via: '1.1 varnish',
+32 silly get     age: '160',
+32 silly get     connection: 'keep-alive',
+32 silly get     'x-served-by': 'cache-yyz8326-YYZ',
+32 silly get     'x-cache': 'HIT',
+32 silly get     'x-cache-hits': '1',
+32 silly get     'x-timer': 'S1501275776.696954,VS0,VE0',
+32 silly get     vary: 'Accept-Encoding, Accept' } ]
+33 verbose get saving phantomjs to C:\Users\local-admin\AppData\Roaming\npm-cache\registry.npmjs.org\phantomjs\.cache.json
+34 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+35 silly resolveWithNewModule phantomjs@1.9.0-1 checking installable status
+36 silly cache add args [ 'phantomjs@1.9.0-1', null ]
+37 verbose cache add spec phantomjs@1.9.0-1
+38 silly cache add parsed spec Result {
+38 silly cache add   raw: 'phantomjs@1.9.0-1',
+38 silly cache add   scope: null,
+38 silly cache add   name: 'phantomjs',
+38 silly cache add   rawSpec: '1.9.0-1',
+38 silly cache add   spec: '1.9.0-1',
+38 silly cache add   type: 'version' }
+39 silly addNamed phantomjs@1.9.0-1
+40 verbose addNamed "1.9.0-1" is a plain semver version for phantomjs
+41 silly mapToRegistry name phantomjs
+42 silly mapToRegistry using default registry
+43 silly mapToRegistry registry https://registry.npmjs.org/
+44 silly mapToRegistry data Result {
+44 silly mapToRegistry   raw: 'phantomjs',
+44 silly mapToRegistry   scope: null,
+44 silly mapToRegistry   name: 'phantomjs',
+44 silly mapToRegistry   rawSpec: '',
+44 silly mapToRegistry   spec: 'latest',
+44 silly mapToRegistry   type: 'tag' }
+45 silly mapToRegistry uri https://registry.npmjs.org/phantomjs
+46 verbose addNameVersion registry:https://registry.npmjs.org/phantomjs not in flight; fetching
+47 verbose get https://registry.npmjs.org/phantomjs not expired, no request
+48 silly mapToRegistry name phantomjs
+49 silly mapToRegistry using default registry
+50 silly mapToRegistry registry https://registry.npmjs.org/
+51 silly mapToRegistry data Result {
+51 silly mapToRegistry   raw: 'phantomjs',
+51 silly mapToRegistry   scope: null,
+51 silly mapToRegistry   name: 'phantomjs',
+51 silly mapToRegistry   rawSpec: '',
+51 silly mapToRegistry   spec: 'latest',
+51 silly mapToRegistry   type: 'tag' }
+52 silly mapToRegistry uri https://registry.npmjs.org/phantomjs
+53 verbose addRemoteTarball https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.0-1.tgz not in flight; adding
+54 verbose addRemoteTarball [ 'https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.0-1.tgz',
+54 verbose addRemoteTarball   '0c2c4e82ff6fdd196459d3522ed27fd19405969a' ]
+55 info retry fetch attempt 1 at 5:02:53 PM
+56 info attempt registry request try #1 at 5:02:53 PM
+57 http fetch GET https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.0-1.tgz
+58 http fetch 200 https://registry.npmjs.org/phantomjs/-/phantomjs-1.9.0-1.tgz
+59 silly fetchAndShaCheck shasum 0c2c4e82ff6fdd196459d3522ed27fd19405969a
+60 verbose addTmpTarball C:\Users\LOCAL-~1\AppData\Local\Temp\npm-22440-80be771f\registry.npmjs.org\phantomjs\-\phantomjs-1.9.0-1.tgz not in flight; adding
+61 verbose addTmpTarball already have metadata; skipping unpack for phantomjs@1.9.0-1
+62 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+63 silly cache afterAdd phantomjs@1.9.0-1
+64 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\phantomjs\1.9.0-1\package\package.json not in flight; writing
+65 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+66 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\phantomjs\1.9.0-1\package\package.json written
+67 silly fetchNamedPackageData rimraf
+68 silly mapToRegistry name rimraf
+69 silly mapToRegistry using default registry
+70 silly mapToRegistry registry https://registry.npmjs.org/
+71 silly mapToRegistry data Result {
+71 silly mapToRegistry   raw: 'rimraf',
+71 silly mapToRegistry   scope: null,
+71 silly mapToRegistry   name: 'rimraf',
+71 silly mapToRegistry   rawSpec: '',
+71 silly mapToRegistry   spec: 'latest',
+71 silly mapToRegistry   type: 'tag' }
+72 silly mapToRegistry uri https://registry.npmjs.org/rimraf
+73 silly fetchNamedPackageData adm-zip
+74 silly mapToRegistry name adm-zip
+75 silly mapToRegistry using default registry
+76 silly mapToRegistry registry https://registry.npmjs.org/
+77 silly mapToRegistry data Result {
+77 silly mapToRegistry   raw: 'adm-zip',
+77 silly mapToRegistry   scope: null,
+77 silly mapToRegistry   name: 'adm-zip',
+77 silly mapToRegistry   rawSpec: '',
+77 silly mapToRegistry   spec: 'latest',
+77 silly mapToRegistry   type: 'tag' }
+78 silly mapToRegistry uri https://registry.npmjs.org/adm-zip
+79 verbose request uri https://registry.npmjs.org/adm-zip
+80 verbose request no auth needed
+81 info attempt registry request try #1 at 5:02:53 PM
+82 http request GET https://registry.npmjs.org/adm-zip
+83 verbose request uri https://registry.npmjs.org/rimraf
+84 verbose request no auth needed
+85 info attempt registry request try #1 at 5:02:53 PM
+86 verbose etag W/"597b1fee-e54e"
+87 verbose lastModified Fri, 28 Jul 2017 11:28:46 GMT
+88 http request GET https://registry.npmjs.org/rimraf
+89 http 200 https://registry.npmjs.org/adm-zip
+90 verbose headers { server: 'nginx/1.10.3',
+90 verbose headers   'content-type': 'application/json',
+90 verbose headers   'last-modified': 'Thu, 27 Jul 2017 05:26:27 GMT',
+90 verbose headers   etag: 'W/"59797983-552a"',
+90 verbose headers   'content-encoding': 'gzip',
+90 verbose headers   'cache-control': 'max-age=300',
+90 verbose headers   'content-length': '3309',
+90 verbose headers   'accept-ranges': 'bytes',
+90 verbose headers   date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+90 verbose headers   via: '1.1 varnish',
+90 verbose headers   age: '68',
+90 verbose headers   connection: 'keep-alive',
+90 verbose headers   'x-served-by': 'cache-yyz8326-YYZ',
+90 verbose headers   'x-cache': 'HIT',
+90 verbose headers   'x-cache-hits': '3',
+90 verbose headers   'x-timer': 'S1501275776.946103,VS0,VE0',
+90 verbose headers   vary: 'Accept-Encoding, Accept' }
+91 silly get cb [ 200,
+91 silly get   { server: 'nginx/1.10.3',
+91 silly get     'content-type': 'application/json',
+91 silly get     'last-modified': 'Thu, 27 Jul 2017 05:26:27 GMT',
+91 silly get     etag: 'W/"59797983-552a"',
+91 silly get     'content-encoding': 'gzip',
+91 silly get     'cache-control': 'max-age=300',
+91 silly get     'content-length': '3309',
+91 silly get     'accept-ranges': 'bytes',
+91 silly get     date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+91 silly get     via: '1.1 varnish',
+91 silly get     age: '68',
+91 silly get     connection: 'keep-alive',
+91 silly get     'x-served-by': 'cache-yyz8326-YYZ',
+91 silly get     'x-cache': 'HIT',
+91 silly get     'x-cache-hits': '3',
+91 silly get     'x-timer': 'S1501275776.946103,VS0,VE0',
+91 silly get     vary: 'Accept-Encoding, Accept' } ]
+92 verbose get saving adm-zip to C:\Users\local-admin\AppData\Roaming\npm-cache\registry.npmjs.org\adm-zip\.cache.json
+93 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+94 silly resolveWithNewModule adm-zip@0.2.1 checking installable status
+95 silly cache add args [ 'adm-zip@0.2.1', null ]
+96 verbose cache add spec adm-zip@0.2.1
+97 silly cache add parsed spec Result {
+97 silly cache add   raw: 'adm-zip@0.2.1',
+97 silly cache add   scope: null,
+97 silly cache add   name: 'adm-zip',
+97 silly cache add   rawSpec: '0.2.1',
+97 silly cache add   spec: '0.2.1',
+97 silly cache add   type: 'version' }
+98 silly addNamed adm-zip@0.2.1
+99 verbose addNamed "0.2.1" is a plain semver version for adm-zip
+100 silly mapToRegistry name adm-zip
+101 silly mapToRegistry using default registry
+102 silly mapToRegistry registry https://registry.npmjs.org/
+103 silly mapToRegistry data Result {
+103 silly mapToRegistry   raw: 'adm-zip',
+103 silly mapToRegistry   scope: null,
+103 silly mapToRegistry   name: 'adm-zip',
+103 silly mapToRegistry   rawSpec: '',
+103 silly mapToRegistry   spec: 'latest',
+103 silly mapToRegistry   type: 'tag' }
+104 silly mapToRegistry uri https://registry.npmjs.org/adm-zip
+105 verbose addNameVersion registry:https://registry.npmjs.org/adm-zip not in flight; fetching
+106 verbose get https://registry.npmjs.org/adm-zip not expired, no request
+107 silly mapToRegistry name adm-zip
+108 silly mapToRegistry using default registry
+109 silly mapToRegistry registry https://registry.npmjs.org/
+110 silly mapToRegistry data Result {
+110 silly mapToRegistry   raw: 'adm-zip',
+110 silly mapToRegistry   scope: null,
+110 silly mapToRegistry   name: 'adm-zip',
+110 silly mapToRegistry   rawSpec: '',
+110 silly mapToRegistry   spec: 'latest',
+110 silly mapToRegistry   type: 'tag' }
+111 silly mapToRegistry uri https://registry.npmjs.org/adm-zip
+112 verbose addRemoteTarball https://registry.npmjs.org/adm-zip/-/adm-zip-0.2.1.tgz not in flight; adding
+113 verbose addRemoteTarball [ 'https://registry.npmjs.org/adm-zip/-/adm-zip-0.2.1.tgz',
+113 verbose addRemoteTarball   'e801cedeb5bd9a4e98d699c5c0f4239e2731dcbf' ]
+114 info retry fetch attempt 1 at 5:02:53 PM
+115 info attempt registry request try #1 at 5:02:53 PM
+116 http fetch GET https://registry.npmjs.org/adm-zip/-/adm-zip-0.2.1.tgz
+117 http 304 https://registry.npmjs.org/rimraf
+118 verbose headers { date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+118 verbose headers   via: '1.1 varnish',
+118 verbose headers   'cache-control': 'max-age=300',
+118 verbose headers   etag: 'W/"597b1fee-e54e"',
+118 verbose headers   age: '102',
+118 verbose headers   connection: 'keep-alive',
+118 verbose headers   'x-served-by': 'cache-yyz8329-YYZ',
+118 verbose headers   'x-cache': 'HIT',
+118 verbose headers   'x-cache-hits': '1',
+118 verbose headers   'x-timer': 'S1501275776.992941,VS0,VE0',
+118 verbose headers   vary: 'Accept-Encoding, Accept' }
+119 silly get cb [ 304,
+119 silly get   { date: 'Fri, 28 Jul 2017 21:02:55 GMT',
+119 silly get     via: '1.1 varnish',
+119 silly get     'cache-control': 'max-age=300',
+119 silly get     etag: 'W/"597b1fee-e54e"',
+119 silly get     age: '102',
+119 silly get     connection: 'keep-alive',
+119 silly get     'x-served-by': 'cache-yyz8329-YYZ',
+119 silly get     'x-cache': 'HIT',
+119 silly get     'x-cache-hits': '1',
+119 silly get     'x-timer': 'S1501275776.992941,VS0,VE0',
+119 silly get     vary: 'Accept-Encoding, Accept' } ]
+120 verbose etag https://registry.npmjs.org/rimraf from cache
+121 verbose get saving rimraf to C:\Users\local-admin\AppData\Roaming\npm-cache\registry.npmjs.org\rimraf\.cache.json
+122 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+123 silly resolveWithNewModule rimraf@2.0.3 checking installable status
+124 silly cache add args [ 'rimraf@~2.0.2', null ]
+125 verbose cache add spec rimraf@~2.0.2
+126 silly cache add parsed spec Result {
+126 silly cache add   raw: 'rimraf@~2.0.2',
+126 silly cache add   scope: null,
+126 silly cache add   name: 'rimraf',
+126 silly cache add   rawSpec: '~2.0.2',
+126 silly cache add   spec: '>=2.0.2 <2.1.0',
+126 silly cache add   type: 'range' }
+127 silly addNamed rimraf@>=2.0.2 <2.1.0
+128 verbose addNamed ">=2.0.2 <2.1.0" is a valid semver range for rimraf
+129 silly addNameRange { name: 'rimraf', range: '>=2.0.2 <2.1.0', hasData: false }
+130 silly mapToRegistry name rimraf
+131 silly mapToRegistry using default registry
+132 silly mapToRegistry registry https://registry.npmjs.org/
+133 silly mapToRegistry data Result {
+133 silly mapToRegistry   raw: 'rimraf',
+133 silly mapToRegistry   scope: null,
+133 silly mapToRegistry   name: 'rimraf',
+133 silly mapToRegistry   rawSpec: '',
+133 silly mapToRegistry   spec: 'latest',
+133 silly mapToRegistry   type: 'tag' }
+134 silly mapToRegistry uri https://registry.npmjs.org/rimraf
+135 verbose addNameRange registry:https://registry.npmjs.org/rimraf not in flight; fetching
+136 verbose get https://registry.npmjs.org/rimraf not expired, no request
+137 silly addNameRange number 2 { name: 'rimraf', range: '>=2.0.2 <2.1.0', hasData: true }
+138 silly addNameRange versions [ 'rimraf',
+138 silly addNameRange   [ '1.0.0',
+138 silly addNameRange     '1.0.1',
+138 silly addNameRange     '1.0.2',
+138 silly addNameRange     '1.0.4',
+138 silly addNameRange     '1.0.5',
+138 silly addNameRange     '1.0.6',
+138 silly addNameRange     '1.0.7',
+138 silly addNameRange     '1.0.8',
+138 silly addNameRange     '1.0.9',
+138 silly addNameRange     '2.0.0',
+138 silly addNameRange     '2.0.1',
+138 silly addNameRange     '2.0.2',
+138 silly addNameRange     '2.0.3',
+138 silly addNameRange     '2.1.0',
+138 silly addNameRange     '2.1.1',
+138 silly addNameRange     '2.1.2',
+138 silly addNameRange     '2.1.3',
+138 silly addNameRange     '2.1.4',
+138 silly addNameRange     '2.2.0',
+138 silly addNameRange     '2.2.1',
+138 silly addNameRange     '2.2.2',
+138 silly addNameRange     '2.2.3',
+138 silly addNameRange     '2.2.4',
+138 silly addNameRange     '2.2.5',
+138 silly addNameRange     '2.2.6',
+138 silly addNameRange     '2.2.8',
+138 silly addNameRange     '2.3.0',
+138 silly addNameRange     '2.3.1',
+138 silly addNameRange     '2.3.2',
+138 silly addNameRange     '2.3.3',
+138 silly addNameRange     '2.3.4',
+138 silly addNameRange     '2.4.0',
+138 silly addNameRange     '2.4.1',
+138 silly addNameRange     '2.4.2',
+138 silly addNameRange     '2.4.3',
+138 silly addNameRange     '2.4.4',
+138 silly addNameRange     '2.4.5',
+138 silly addNameRange     '2.5.0',
+138 silly addNameRange     '2.5.1',
+138 silly addNameRange     '2.5.2',
+138 silly addNameRange     '2.5.3',
+138 silly addNameRange     '2.5.4',
+138 silly addNameRange     '2.6.0',
+138 silly addNameRange     '2.6.1' ] ]
+139 silly addNamed rimraf@2.0.3
+140 verbose addNamed "2.0.3" is a plain semver version for rimraf
+141 silly mapToRegistry name rimraf
+142 silly mapToRegistry using default registry
+143 silly mapToRegistry registry https://registry.npmjs.org/
+144 silly mapToRegistry data Result {
+144 silly mapToRegistry   raw: 'rimraf',
+144 silly mapToRegistry   scope: null,
+144 silly mapToRegistry   name: 'rimraf',
+144 silly mapToRegistry   rawSpec: '',
+144 silly mapToRegistry   spec: 'latest',
+144 silly mapToRegistry   type: 'tag' }
+145 silly mapToRegistry uri https://registry.npmjs.org/rimraf
+146 verbose addRemoteTarball https://registry.npmjs.org/rimraf/-/rimraf-2.0.3.tgz not in flight; adding
+147 verbose addRemoteTarball [ 'https://registry.npmjs.org/rimraf/-/rimraf-2.0.3.tgz',
+147 verbose addRemoteTarball   'f50a2965e7144e9afd998982f15df706730f56a9' ]
+148 info retry fetch attempt 1 at 5:02:53 PM
+149 info attempt registry request try #1 at 5:02:53 PM
+150 http fetch GET https://registry.npmjs.org/rimraf/-/rimraf-2.0.3.tgz
+151 http fetch 200 https://registry.npmjs.org/rimraf/-/rimraf-2.0.3.tgz
+152 silly fetchAndShaCheck shasum f50a2965e7144e9afd998982f15df706730f56a9
+153 verbose addTmpTarball C:\Users\LOCAL-~1\AppData\Local\Temp\npm-22440-80be771f\registry.npmjs.org\rimraf\-\rimraf-2.0.3.tgz not in flight; adding
+154 verbose addTmpTarball already have metadata; skipping unpack for rimraf@2.0.3
+155 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+156 http fetch 200 https://registry.npmjs.org/adm-zip/-/adm-zip-0.2.1.tgz
+157 silly cache afterAdd rimraf@2.0.3
+158 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\rimraf\2.0.3\package\package.json not in flight; writing
+159 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+160 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\rimraf\2.0.3\package\package.json written
+161 silly fetchAndShaCheck shasum e801cedeb5bd9a4e98d699c5c0f4239e2731dcbf
+162 verbose addTmpTarball C:\Users\LOCAL-~1\AppData\Local\Temp\npm-22440-80be771f\registry.npmjs.org\adm-zip\-\adm-zip-0.2.1.tgz not in flight; adding
+163 verbose addTmpTarball already have metadata; skipping unpack for adm-zip@0.2.1
+164 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+165 silly cache afterAdd adm-zip@0.2.1
+166 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\adm-zip\0.2.1\package\package.json not in flight; writing
+167 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+168 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\adm-zip\0.2.1\package\package.json written
+169 silly fetchNamedPackageData graceful-fs
+170 silly mapToRegistry name graceful-fs
+171 silly mapToRegistry using default registry
+172 silly mapToRegistry registry https://registry.npmjs.org/
+173 silly mapToRegistry data Result {
+173 silly mapToRegistry   raw: 'graceful-fs',
+173 silly mapToRegistry   scope: null,
+173 silly mapToRegistry   name: 'graceful-fs',
+173 silly mapToRegistry   rawSpec: '',
+173 silly mapToRegistry   spec: 'latest',
+173 silly mapToRegistry   type: 'tag' }
+174 silly mapToRegistry uri https://registry.npmjs.org/graceful-fs
+175 verbose request uri https://registry.npmjs.org/graceful-fs
+176 verbose request no auth needed
+177 info attempt registry request try #1 at 5:02:53 PM
+178 verbose etag W/"5969191d-100f9"
+179 verbose lastModified Fri, 14 Jul 2017 19:18:53 GMT
+180 http request GET https://registry.npmjs.org/graceful-fs
+181 http 304 https://registry.npmjs.org/graceful-fs
+182 verbose headers { date: 'Fri, 28 Jul 2017 21:02:56 GMT',
+182 verbose headers   via: '1.1 varnish',
+182 verbose headers   'cache-control': 'max-age=300',
+182 verbose headers   etag: 'W/"5969191d-100f9"',
+182 verbose headers   age: '169',
+182 verbose headers   connection: 'keep-alive',
+182 verbose headers   'x-served-by': 'cache-yyz8329-YYZ',
+182 verbose headers   'x-cache': 'HIT',
+182 verbose headers   'x-cache-hits': '5',
+182 verbose headers   'x-timer': 'S1501275776.125449,VS0,VE0',
+182 verbose headers   vary: 'Accept-Encoding, Accept' }
+183 silly get cb [ 304,
+183 silly get   { date: 'Fri, 28 Jul 2017 21:02:56 GMT',
+183 silly get     via: '1.1 varnish',
+183 silly get     'cache-control': 'max-age=300',
+183 silly get     etag: 'W/"5969191d-100f9"',
+183 silly get     age: '169',
+183 silly get     connection: 'keep-alive',
+183 silly get     'x-served-by': 'cache-yyz8329-YYZ',
+183 silly get     'x-cache': 'HIT',
+183 silly get     'x-cache-hits': '5',
+183 silly get     'x-timer': 'S1501275776.125449,VS0,VE0',
+183 silly get     vary: 'Accept-Encoding, Accept' } ]
+184 verbose etag https://registry.npmjs.org/graceful-fs from cache
+185 verbose get saving graceful-fs to C:\Users\local-admin\AppData\Roaming\npm-cache\registry.npmjs.org\graceful-fs\.cache.json
+186 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+187 silly resolveWithNewModule graceful-fs@1.1.14 checking installable status
+188 silly cache add args [ 'graceful-fs@~1.1', null ]
+189 verbose cache add spec graceful-fs@~1.1
+190 silly cache add parsed spec Result {
+190 silly cache add   raw: 'graceful-fs@~1.1',
+190 silly cache add   scope: null,
+190 silly cache add   name: 'graceful-fs',
+190 silly cache add   rawSpec: '~1.1',
+190 silly cache add   spec: '>=1.1.0 <1.2.0',
+190 silly cache add   type: 'range' }
+191 silly addNamed graceful-fs@>=1.1.0 <1.2.0
+192 verbose addNamed ">=1.1.0 <1.2.0" is a valid semver range for graceful-fs
+193 silly addNameRange { name: 'graceful-fs', range: '>=1.1.0 <1.2.0', hasData: false }
+194 silly mapToRegistry name graceful-fs
+195 silly mapToRegistry using default registry
+196 silly mapToRegistry registry https://registry.npmjs.org/
+197 silly mapToRegistry data Result {
+197 silly mapToRegistry   raw: 'graceful-fs',
+197 silly mapToRegistry   scope: null,
+197 silly mapToRegistry   name: 'graceful-fs',
+197 silly mapToRegistry   rawSpec: '',
+197 silly mapToRegistry   spec: 'latest',
+197 silly mapToRegistry   type: 'tag' }
+198 silly mapToRegistry uri https://registry.npmjs.org/graceful-fs
+199 verbose addNameRange registry:https://registry.npmjs.org/graceful-fs not in flight; fetching
+200 verbose get https://registry.npmjs.org/graceful-fs not expired, no request
+201 silly addNameRange number 2 { name: 'graceful-fs', range: '>=1.1.0 <1.2.0', hasData: true }
+202 silly addNameRange versions [ 'graceful-fs',
+202 silly addNameRange   [ '1.0.0',
+202 silly addNameRange     '1.0.1',
+202 silly addNameRange     '1.0.2',
+202 silly addNameRange     '1.1.0',
+202 silly addNameRange     '1.1.1',
+202 silly addNameRange     '1.1.2',
+202 silly addNameRange     '1.1.3',
+202 silly addNameRange     '1.1.4',
+202 silly addNameRange     '1.1.5',
+202 silly addNameRange     '1.1.6',
+202 silly addNameRange     '1.1.7',
+202 silly addNameRange     '1.1.8',
+202 silly addNameRange     '1.1.9',
+202 silly addNameRange     '1.1.10',
+202 silly addNameRange     '1.1.11',
+202 silly addNameRange     '1.1.12',
+202 silly addNameRange     '1.1.13',
+202 silly addNameRange     '1.1.14',
+202 silly addNameRange     '1.2.0',
+202 silly addNameRange     '1.2.1',
+202 silly addNameRange     '1.2.2',
+202 silly addNameRange     '1.2.3',
+202 silly addNameRange     '2.0.0',
+202 silly addNameRange     '2.0.1',
+202 silly addNameRange     '2.0.2',
+202 silly addNameRange     '2.0.3',
+202 silly addNameRange     '3.0.0',
+202 silly addNameRange     '3.0.1',
+202 silly addNameRange     '3.0.2',
+202 silly addNameRange     '3.0.3',
+202 silly addNameRange     '3.0.4',
+202 silly addNameRange     '3.0.5',
+202 silly addNameRange     '3.0.6',
+202 silly addNameRange     '3.0.7',
+202 silly addNameRange     '3.0.8',
+202 silly addNameRange     '4.1.0',
+202 silly addNameRange     '4.1.1',
+202 silly addNameRange     '4.1.2',
+202 silly addNameRange     '4.1.3',
+202 silly addNameRange     '4.1.4',
+202 silly addNameRange     '4.1.5',
+202 silly addNameRange     '3.0.9',
+202 silly addNameRange     '4.1.6',
+202 silly addNameRange     '3.0.10',
+202 silly addNameRange     '3.0.11',
+202 silly addNameRange     '4.1.7',
+202 silly addNameRange     '4.1.8',
+202 silly addNameRange     '4.1.9',
+202 silly addNameRange     '4.1.10',
+202 silly addNameRange     '4.1.11' ] ]
+203 silly addNamed graceful-fs@1.1.14
+204 verbose addNamed "1.1.14" is a plain semver version for graceful-fs
+205 warn deprecated graceful-fs@1.1.14: graceful-fs v3.0.0 and before will fail on node releases >= v7.0. Please update to graceful-fs@^4.0.0 as soon as possible. Use 'npm ls graceful-fs' to find it in the tree.
+206 silly mapToRegistry name graceful-fs
+207 silly mapToRegistry using default registry
+208 silly mapToRegistry registry https://registry.npmjs.org/
+209 silly mapToRegistry data Result {
+209 silly mapToRegistry   raw: 'graceful-fs',
+209 silly mapToRegistry   scope: null,
+209 silly mapToRegistry   name: 'graceful-fs',
+209 silly mapToRegistry   rawSpec: '',
+209 silly mapToRegistry   spec: 'latest',
+209 silly mapToRegistry   type: 'tag' }
+210 silly mapToRegistry uri https://registry.npmjs.org/graceful-fs
+211 verbose addRemoteTarball https://registry.npmjs.org/graceful-fs/-/graceful-fs-1.1.14.tgz not in flight; adding
+212 verbose addRemoteTarball [ 'https://registry.npmjs.org/graceful-fs/-/graceful-fs-1.1.14.tgz',
+212 verbose addRemoteTarball   '07078db5f6377f6321fceaaedf497de124dc9465' ]
+213 info retry fetch attempt 1 at 5:02:53 PM
+214 info attempt registry request try #1 at 5:02:53 PM
+215 http fetch GET https://registry.npmjs.org/graceful-fs/-/graceful-fs-1.1.14.tgz
+216 http fetch 200 https://registry.npmjs.org/graceful-fs/-/graceful-fs-1.1.14.tgz
+217 silly fetchAndShaCheck shasum 07078db5f6377f6321fceaaedf497de124dc9465
+218 verbose addTmpTarball C:\Users\LOCAL-~1\AppData\Local\Temp\npm-22440-80be771f\registry.npmjs.org\graceful-fs\-\graceful-fs-1.1.14.tgz not in flight; adding
+219 verbose addTmpTarball already have metadata; skipping unpack for graceful-fs@1.1.14
+220 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+221 silly cache afterAdd graceful-fs@1.1.14
+222 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\graceful-fs\1.1.14\package\package.json not in flight; writing
+223 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache correctMkdir not in flight; initializing
+224 verbose afterAdd C:\Users\local-admin\AppData\Roaming\npm-cache\graceful-fs\1.1.14\package\package.json written
+225 silly loadAllDepsIntoIdealTree Finishing
+226 silly idealTree:prePrune underscore@1.5.0
+226 silly idealTree:prePrune +-- adm-zip@0.2.1
+226 silly idealTree:prePrune +-- graceful-fs@1.1.14
+226 silly idealTree:prePrune +-- phantomjs@1.9.0-1
+226 silly idealTree:prePrune `-- rimraf@2.0.3
+227 silly loadIdealTree Finishing
+228 silly currentTree underscore@1.5.0
+229 silly idealTree underscore@1.5.0
+229 silly idealTree +-- adm-zip@0.2.1
+229 silly idealTree +-- graceful-fs@1.1.14
+229 silly idealTree +-- phantomjs@1.9.0-1
+229 silly idealTree `-- rimraf@2.0.3
+230 silly generateActionsToTake Starting
+231 silly install generateActionsToTake
+232 silly generateActionsToTake Finishing
+233 silly diffTrees action count 4
+234 silly diffTrees add adm-zip@0.2.1
+235 silly diffTrees add graceful-fs@1.1.14
+236 silly diffTrees add rimraf@2.0.3
+237 silly diffTrees add phantomjs@1.9.0-1
+238 silly decomposeActions action count 32
+239 silly decomposeActions fetch adm-zip@0.2.1
+240 silly decomposeActions extract adm-zip@0.2.1
+241 silly decomposeActions test adm-zip@0.2.1
+242 silly decomposeActions preinstall adm-zip@0.2.1
+243 silly decomposeActions build adm-zip@0.2.1
+244 silly decomposeActions install adm-zip@0.2.1
+245 silly decomposeActions postinstall adm-zip@0.2.1
+246 silly decomposeActions finalize adm-zip@0.2.1
+247 silly decomposeActions fetch graceful-fs@1.1.14
+248 silly decomposeActions extract graceful-fs@1.1.14
+249 silly decomposeActions test graceful-fs@1.1.14
+250 silly decomposeActions preinstall graceful-fs@1.1.14
+251 silly decomposeActions build graceful-fs@1.1.14
+252 silly decomposeActions install graceful-fs@1.1.14
+253 silly decomposeActions postinstall graceful-fs@1.1.14
+254 silly decomposeActions finalize graceful-fs@1.1.14
+255 silly decomposeActions fetch rimraf@2.0.3
+256 silly decomposeActions extract rimraf@2.0.3
+257 silly decomposeActions test rimraf@2.0.3
+258 silly decomposeActions preinstall rimraf@2.0.3
+259 silly decomposeActions build rimraf@2.0.3
+260 silly decomposeActions install rimraf@2.0.3
+261 silly decomposeActions postinstall rimraf@2.0.3
+262 silly decomposeActions finalize rimraf@2.0.3
+263 silly decomposeActions fetch phantomjs@1.9.0-1
+264 silly decomposeActions extract phantomjs@1.9.0-1
+265 silly decomposeActions test phantomjs@1.9.0-1
+266 silly decomposeActions preinstall phantomjs@1.9.0-1
+267 silly decomposeActions build phantomjs@1.9.0-1
+268 silly decomposeActions install phantomjs@1.9.0-1
+269 silly decomposeActions postinstall phantomjs@1.9.0-1
+270 silly decomposeActions finalize phantomjs@1.9.0-1
+271 silly executeActions Starting
+272 silly install executeActions
+273 silly doSerial global-install 0
+274 silly doParallel fetch 4
+275 verbose correctMkdir C:\Users\local-admin\AppData\Roaming\npm-cache\_locks correctMkdir not in flight; initializing
+276 verbose lock using C:\Users\local-admin\AppData\Roaming\npm-cache\_locks\staging-1183dbf108d18892.lock for C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging
+277 silly doParallel extract 4
+278 silly extract adm-zip@0.2.1
+279 silly extract graceful-fs@1.1.14
+280 silly extract rimraf@2.0.3
+281 silly extract phantomjs@1.9.0-1
+282 verbose unbuild node_modules\.staging\adm-zip-0700fa90
+283 verbose unbuild node_modules\.staging\graceful-fs-89c6b6c9
+284 verbose unbuild node_modules\.staging\rimraf-beb4d484
+285 verbose unbuild node_modules\.staging\phantomjs-f96c0577
+286 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90 is being purged from base C:\xampp\htdocs\lli.local\sites\all\libraries\underscore
+287 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90
+288 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9 is being purged from base C:\xampp\htdocs\lli.local\sites\all\libraries\underscore
+289 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9
+290 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484 is being purged from base C:\xampp\htdocs\lli.local\sites\all\libraries\underscore
+291 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484
+292 verbose tar unpack C:\Users\local-admin\AppData\Roaming\npm-cache\adm-zip\0.2.1\package.tgz
+293 verbose tar unpacking to C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90
+294 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90 is being purged
+295 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90
+296 verbose tar unpack C:\Users\local-admin\AppData\Roaming\npm-cache\graceful-fs\1.1.14\package.tgz
+297 verbose tar unpacking to C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9
+298 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9 is being purged
+299 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9
+300 verbose tar unpack C:\Users\local-admin\AppData\Roaming\npm-cache\rimraf\2.0.3\package.tgz
+301 verbose tar unpacking to C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484
+302 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484 is being purged
+303 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484
+304 silly gunzTarPerm modes [ '777', '666' ]
+305 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577 is being purged from base C:\xampp\htdocs\lli.local\sites\all\libraries\underscore
+306 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577
+307 silly gunzTarPerm modes [ '777', '666' ]
+308 silly gunzTarPerm modes [ '777', '666' ]
+309 verbose tar unpack C:\Users\local-admin\AppData\Roaming\npm-cache\phantomjs\1.9.0-1\package.tgz
+310 verbose tar unpacking to C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577
+311 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577 is being purged
+312 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577
+313 silly gunzTarPerm modes [ '777', '666' ]
+314 silly gunzTarPerm extractEntry package.json
+315 silly gunzTarPerm extractEntry package.json
+316 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+317 silly gunzTarPerm extractEntry package.json
+318 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+319 silly gunzTarPerm extractEntry package.json
+320 silly gunzTarPerm modified mode [ 'package.json', 420, 438 ]
+321 silly gunzTarPerm extractEntry .npmignore
+322 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+323 silly gunzTarPerm extractEntry README.md
+324 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+325 silly gunzTarPerm extractEntry README.md
+326 silly gunzTarPerm extractEntry zipEntry.js
+327 silly gunzTarPerm extractEntry .npmignore
+328 silly gunzTarPerm modified mode [ '.npmignore', 420, 438 ]
+329 silly gunzTarPerm extractEntry README.md
+330 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+331 silly gunzTarPerm extractEntry README.md
+332 silly gunzTarPerm modified mode [ 'README.md', 420, 438 ]
+333 silly gunzTarPerm extractEntry LICENSE
+334 silly gunzTarPerm modified mode [ 'LICENSE', 420, 438 ]
+335 silly gunzTarPerm extractEntry rimraf.js
+336 silly gunzTarPerm modified mode [ 'rimraf.js', 420, 438 ]
+337 silly gunzTarPerm extractEntry AUTHORS
+338 silly gunzTarPerm modified mode [ 'AUTHORS', 420, 438 ]
+339 silly gunzTarPerm extractEntry LICENSE
+340 silly gunzTarPerm modified mode [ 'LICENSE', 420, 438 ]
+341 silly gunzTarPerm extractEntry graceful-fs.js
+342 silly gunzTarPerm modified mode [ 'graceful-fs.js', 420, 438 ]
+343 silly gunzTarPerm extractEntry sandbox.js
+344 silly gunzTarPerm extractEntry adm-zip.js
+345 silly gunzTarPerm extractEntry install.js
+346 silly gunzTarPerm modified mode [ 'install.js', 420, 438 ]
+347 silly gunzTarPerm extractEntry .jshintrc
+348 silly gunzTarPerm modified mode [ '.jshintrc', 420, 438 ]
+349 silly gunzTarPerm extractEntry bin/phantomjs
+350 silly gunzTarPerm modified mode [ 'bin/phantomjs', 493, 511 ]
+351 silly gunzTarPerm extractEntry lib/phantomjs.js
+352 silly gunzTarPerm modified mode [ 'lib/phantomjs.js', 420, 438 ]
+353 silly gunzTarPerm extractEntry test/open.js
+354 silly gunzTarPerm modified mode [ 'test/open.js', 420, 438 ]
+355 silly gunzTarPerm extractEntry zipFile.js
+356 silly gunzTarPerm extractEntry test/test-async.js
+357 silly gunzTarPerm modified mode [ 'test/test-async.js', 420, 438 ]
+358 silly gunzTarPerm extractEntry test/test-fiber.js
+359 silly gunzTarPerm modified mode [ 'test/test-fiber.js', 420, 438 ]
+360 silly gunzTarPerm extractEntry test/test-sync.js
+361 silly gunzTarPerm modified mode [ 'test/test-sync.js', 420, 438 ]
+362 silly gunzTarPerm extractEntry test/run.sh
+363 silly gunzTarPerm modified mode [ 'test/run.sh', 420, 438 ]
+364 silly gunzTarPerm extractEntry LICENSE.txt
+365 silly gunzTarPerm modified mode [ 'LICENSE.txt', 420, 438 ]
+366 silly gunzTarPerm extractEntry test/loadspeed.js
+367 silly gunzTarPerm modified mode [ 'test/loadspeed.js', 420, 438 ]
+368 silly gunzTarPerm extractEntry test/tests.js
+369 silly gunzTarPerm modified mode [ 'test/tests.js', 420, 438 ]
+370 silly gunzTarPerm extractEntry MIT-LICENSE.txt
+371 silly gunzTarPerm extractEntry methods/deflater.js
+372 silly gunzTarPerm extractEntry methods/index.js
+373 silly gunzTarPerm extractEntry methods/inflater.js
+374 silly gunzTarPerm extractEntry test/setup.sh
+375 silly gunzTarPerm modified mode [ 'test/setup.sh', 420, 438 ]
+376 silly gunzTarPerm extractEntry util/constants.js
+377 silly gunzTarPerm extractEntry util/errors.js
+378 silly gunzTarPerm extractEntry util/fattr.js
+379 silly gunzTarPerm extractEntry util/index.js
+380 silly gunzTarPerm extractEntry util/utils.js
+381 silly gunzTarPerm extractEntry headers/dataHeader.js
+382 silly gunzTarPerm extractEntry headers/entryHeader.js
+383 silly gunzTarPerm extractEntry headers/index.js
+384 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9\node_modules is being purged
+385 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9\node_modules
+386 silly gunzTarPerm extractEntry headers/mainHeader.js
+387 silly gunzTarPerm extractEntry .travis.yml
+388 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484\node_modules is being purged
+389 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484\node_modules
+390 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577\node_modules is being purged
+391 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577\node_modules
+392 silly gentlyRm C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90\node_modules is being purged
+393 verbose gentlyRm don't care about contents; nuking C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90\node_modules
+394 silly doParallel preinstall 4
+395 silly preinstall adm-zip@0.2.1 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90
+396 info lifecycle adm-zip@0.2.1~preinstall: adm-zip@0.2.1
+397 silly preinstall graceful-fs@1.1.14 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9
+398 info lifecycle graceful-fs@1.1.14~preinstall: graceful-fs@1.1.14
+399 silly preinstall rimraf@2.0.3 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484
+400 info lifecycle rimraf@2.0.3~preinstall: rimraf@2.0.3
+401 silly preinstall phantomjs@1.9.0-1 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577
+402 info lifecycle phantomjs@1.9.0-1~preinstall: phantomjs@1.9.0-1
+403 silly lifecycle graceful-fs@1.1.14~preinstall: no script for preinstall, continuing
+404 silly lifecycle adm-zip@0.2.1~preinstall: no script for preinstall, continuing
+405 silly lifecycle rimraf@2.0.3~preinstall: no script for preinstall, continuing
+406 silly lifecycle phantomjs@1.9.0-1~preinstall: no script for preinstall, continuing
+407 silly doReverseSerial remove 0
+408 silly doSerial move 0
+409 silly doSerial finalize 4
+410 silly finalize C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\adm-zip
+411 silly finalize C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\graceful-fs
+412 silly finalize C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\rimraf
+413 silly finalize C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\phantomjs
+414 silly doSerial build 4
+415 silly build adm-zip@0.2.1
+416 info linkStuff adm-zip@0.2.1
+417 silly linkStuff adm-zip@0.2.1 has C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules as its parent node_modules
+418 verbose linkBins adm-zip@0.2.1
+419 verbose linkMans adm-zip@0.2.1
+420 silly build graceful-fs@1.1.14
+421 info linkStuff graceful-fs@1.1.14
+422 silly linkStuff graceful-fs@1.1.14 has C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules as its parent node_modules
+423 verbose linkBins graceful-fs@1.1.14
+424 verbose linkMans graceful-fs@1.1.14
+425 silly build rimraf@2.0.3
+426 info linkStuff rimraf@2.0.3
+427 silly linkStuff rimraf@2.0.3 has C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules as its parent node_modules
+428 verbose linkBins rimraf@2.0.3
+429 verbose linkMans rimraf@2.0.3
+430 silly build phantomjs@1.9.0-1
+431 info linkStuff phantomjs@1.9.0-1
+432 silly linkStuff phantomjs@1.9.0-1 has C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules as its parent node_modules
+433 verbose linkBins phantomjs@1.9.0-1
+434 verbose link bins [ { phantomjs: './bin/phantomjs' },
+434 verbose link bins   'C:\\xampp\\htdocs\\lli.local\\sites\\all\\libraries\\underscore\\node_modules\\.bin',
+434 verbose link bins   false ]
+435 verbose linkMans phantomjs@1.9.0-1
+436 silly doSerial global-link 0
+437 silly doParallel update-linked 0
+438 silly doSerial install 4
+439 silly install adm-zip@0.2.1 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\adm-zip-0700fa90
+440 info lifecycle adm-zip@0.2.1~install: adm-zip@0.2.1
+441 silly lifecycle adm-zip@0.2.1~install: no script for install, continuing
+442 silly install graceful-fs@1.1.14 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\graceful-fs-89c6b6c9
+443 info lifecycle graceful-fs@1.1.14~install: graceful-fs@1.1.14
+444 silly lifecycle graceful-fs@1.1.14~install: no script for install, continuing
+445 silly install rimraf@2.0.3 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\rimraf-beb4d484
+446 info lifecycle rimraf@2.0.3~install: rimraf@2.0.3
+447 silly lifecycle rimraf@2.0.3~install: no script for install, continuing
+448 silly install phantomjs@1.9.0-1 C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging\phantomjs-f96c0577
+449 info lifecycle phantomjs@1.9.0-1~install: phantomjs@1.9.0-1
+450 verbose lifecycle phantomjs@1.9.0-1~install: unsafe-perm in lifecycle true
+451 verbose lifecycle phantomjs@1.9.0-1~install: PATH: C:\Program Files\nodejs\node_modules\npm\bin\node-gyp-bin;C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\phantomjs\node_modules\.bin;C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.bin;C:\Program Files\nodejs;C:\Program Files\ImageMagick-7.0.6-Q16;C:\ProgramData\Oracle\Java\javapath;C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\Program Files (x86)\ATI Technologies\ATI.ACE\Core-Static;C:\Program Files (x86)\AMD\ATI.ACE\Core-Static;C:\Program Files\nodejs\;C:\Program Files (x86)\PuTTY\;C:\xampp\php;C:\ProgramData\ComposerSetup\bin;C:\Program Files\OpenVPN\bin;C:\Program Files (x86)\QuickTime\QTSystem\;C:\HashiCorp\Vagrant\bin;C:\Ruby22-x64\bin;C:\Users\local-admin\AppData\Local\Programs\Git\cmd;C:\Users\local-admin\AppData\Roaming\npm;c:\program files\nodejs;C:\Users\local-admin\AppData\Roaming\Composer\vendor\bin;C:\Users\local-admin\AppData\Roaming\Composer\vendor\drush\drush;C:\xampp\mysql\bin;C:\Users\local-admin\AppData\Local\Microsoft\WindowsApps;C:\adb;C:\Ruby22-x64\bin;C:\Users\local-admin\AppData\Local\Programs\Git\cmd;C:\Users\local-admin\AppData\Roaming\npm;c:\program files\nodejs;C:\Users\local-admin\AppData\Roaming\Composer\vendor\bin;C:\Users\local-admin\AppData\Roaming\Composer\vendor\drush\drush;C:\xampp\mysql\bin;C:\Users\local-admin\AppData\Local\Microsoft\WindowsApps;
+452 verbose lifecycle phantomjs@1.9.0-1~install: CWD: C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\phantomjs
+453 silly lifecycle phantomjs@1.9.0-1~install: Args: [ '/d /s /c', 'node install.js' ]
+454 silly lifecycle phantomjs@1.9.0-1~install: Returned: code: 1  signal: null
+455 info lifecycle phantomjs@1.9.0-1~install: Failed to exec install script
+456 verbose unlock done using C:\Users\local-admin\AppData\Roaming\npm-cache\_locks\staging-1183dbf108d18892.lock for C:\xampp\htdocs\lli.local\sites\all\libraries\underscore\node_modules\.staging
+457 silly rollbackFailedOptional Starting
+458 silly rollbackFailedOptional Finishing
+459 silly runTopLevelLifecycles Starting
+460 silly runTopLevelLifecycles Finishing
+461 silly install printInstalled
+462 verbose stack Error: phantomjs@1.9.0-1 install: `node install.js`
+462 verbose stack Exit status 1
+462 verbose stack     at EventEmitter.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\lifecycle.js:245:16)
+462 verbose stack     at emitTwo (events.js:106:13)
+462 verbose stack     at EventEmitter.emit (events.js:191:7)
+462 verbose stack     at ChildProcess.<anonymous> (C:\Program Files\nodejs\node_modules\npm\lib\utils\spawn.js:24:14)
+462 verbose stack     at emitTwo (events.js:106:13)
+462 verbose stack     at ChildProcess.emit (events.js:191:7)
+462 verbose stack     at maybeClose (internal/child_process.js:852:16)
+462 verbose stack     at Process.ChildProcess._handle.onexit (internal/child_process.js:215:5)
+463 verbose pkgid phantomjs@1.9.0-1
+464 verbose cwd C:\xampp\htdocs\lli.local\sites\all\libraries\underscore
+465 error Windows_NT 10.0.15063
+466 error argv "C:\\Program Files\\nodejs\\node.exe" "C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js" "install" "--scripts-prepend-node-path=auto"
+467 error node v6.2.1
+468 error npm  v3.9.3
+469 error code ELIFECYCLE
+470 error phantomjs@1.9.0-1 install: `node install.js`
+470 error Exit status 1
+471 error Failed at the phantomjs@1.9.0-1 install script 'node install.js'.
+471 error Make sure you have the latest version of node.js and npm installed.
+471 error If you do, this is most likely a problem with the phantomjs package,
+471 error not with npm itself.
+471 error Tell the author that this fails on your system:
+471 error     node install.js
+471 error You can get information on how to open an issue for this project with:
+471 error     npm bugs phantomjs
+471 error Or if that isn't available, you can get their info via:
+471 error     npm owner ls phantomjs
+471 error There is likely additional logging output above.
+472 verbose exit [ 1, true ]

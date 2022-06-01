@@ -1,0 +1,24 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: local-admin
+ * Date: 8/28/2017
+ * Time: 11:30 AM
+ */
+
+/**
+ * Implements hook_update_N().
+ */
+function lli_custom_module_update_3()  {
+  // Change our weight to one heavier.
+db_update('system')
+  ->fields(array('weight' => 999))
+  ->condition('name', 'lli_custom_module', '=')
+  ->execute();
+
+  // Uncomment this to confirm your module is now 'heavier' than Print PDF.
+  // Requires Devel module.
+  $modules = implode(PHP_EOL, module_list());
+  dpm($modules, 'modules');
+}
+

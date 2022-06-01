@@ -1,0 +1,20 @@
+// Course Enrollment Admin Changes
+
+.view-course-enrollments {
+  .form-item.form-type-bef-checkbox {
+    float: left;
+  }
+
+  #edit-field-belt-color-tid-wrapper {
+    display: block;
+  }
+}
+
+//general ember changes
+.contextual-links-wrapper {
+  top: 40px !important;
+}
+.views-exposed-widget{
+  display: block !important;
+}
+

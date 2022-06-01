@@ -1,0 +1,5 @@
+name = LLI Custom Module
+description = Custom Module for Website Tweaks
+core = 7.x
+
+scripts[] = addtocartscript.js

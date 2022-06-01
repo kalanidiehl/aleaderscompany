@@ -1,0 +1,71 @@
+name = The Eight
+description = This theme build by Bluetheme
+version = 1.6
+core = 7.x
+screenshot = 'screenshot.png'
+
+engine = phptemplate
+
+
+
+;Stylesheet
+
+stylesheets[all][] = css/reset.css
+stylesheets[all][] = css/bootstrap.css
+stylesheets[all][] = css/jquery.fancybox.css
+stylesheets[all][] = css/main.css
+stylesheets[all][] = css/indent.css
+
+;Font
+stylesheets[all][] = fonts/font-awesome/css/font-awesome.min.css
+stylesheets[all][] = fonts/fi/flaticon.css
+stylesheets[all][] = fonts/lli-flaticons/lli-flaticon.css
+
+;Colors
+stylesheets[all][] = tuner/css/colorpicker.css
+stylesheets[all][] = tuner/css/styles.css
+
+;Javascript
+scripts[] = js/jquery-ui.min.js
+scripts[] = js/bootstrap.js
+scripts[] = js/jquery.sticky.js
+scripts[] = js/cws_parallax.js
+
+scripts[] = js/jquery.fancybox.pack.js
+scripts[] = js/jquery.fancybox-media.js
+scripts[] = js/jquery.isotope.min.js
+scripts[] = js/script.js
+scripts[] = js/jquery.tweet.js
+scripts[] = tuner/js/colorpicker.js
+scripts[] = tuner/js/scripts.js
+
+;Custom Colorbox
+stylesheets[all][] = llicolorbox/default/colorbox_lli.css
+scripts[] = llicolorbox/default/colorbox_lli.js
+
+;BCAD Group Additional Styles
+stylesheets[all][] = stylesheets/bcadstyles.css
+
+;LMS js - from opigno platon
+scripts[] = js/LMS.js
+
+;Regions
+
+regions[top_sticky_left]  = Top Sticky Left
+regions[top_sticky_right] = Top Sticky Right
+regions[navigation] = Navigation
+regions[slider]  = Slider
+regions[breadcrumbs] = Breadcrumbs
+regions[help]    = Help
+regions[sidebar_first] = Sidebar first
+retions[content_top] = Content Top
+regions[content] = Content
+regions[content_bottom] = Content Bottom
+regions[sidebar_second] = Sidebar second
+regions[footer_first]  = Footer First
+regions[footer_second] = Footer Second
+regions[footer_third]  = Footer Third
+regions[footer_four]   = Footer Four
+regions[footer_five]   = Footer Five
+regions[copyright]     = Copyright
+regions[social_footer]        = Social
