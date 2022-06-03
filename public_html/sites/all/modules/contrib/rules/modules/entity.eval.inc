@@ -5,6 +5,7 @@
  * Contains rules integration for entities needed during evaluation.
  *
  * @addtogroup rules
+ *
  * @{
  */
 
@@ -74,7 +75,7 @@ function rules_action_entity_query_info_alter(&$element_info, RulesAbstractPlugi
           $property_type = array($property_type, substr($property_type, strlen('list<'), strlen($property_type) - strlen('list<>')));
         }
         $element_info['parameter']['value']['type'] = $property_type;
-        $element_info['parameter']['value']['options list']  = $property->optionsList() ? 'rules_action_entity_query_value_options_list' : FALSE;
+        $element_info['parameter']['value']['options list'] = $property->optionsList() ? 'rules_action_entity_query_value_options_list' : FALSE;
       }
     }
   }
@@ -112,9 +113,10 @@ function rules_action_entity_create_info_alter(&$element_info, RulesAbstractPlug
       $info = $child->info();
       if (!empty($info['required'])) {
         $info += array('type' => 'text');
-        // Prefix parameter names to avoid name clashes with existing parameters.
+        // Prefix parameter names to avoid name clashes
+        // with existing parameters.
         $element_info['parameter']['param_' . $name] = array_intersect_key($info, array_flip(array('type', 'label', 'description')));
-        $element_info['parameter']['param_' . $name]['options list']  = $child->optionsList() ? 'rules_action_entity_parameter_options_list' : FALSE;
+        $element_info['parameter']['param_' . $name]['options list'] = $child->optionsList() ? 'rules_action_entity_parameter_options_list' : FALSE;
       }
     }
     $element_info['provides']['entity_created']['type'] = $element->settings['type'];
@@ -127,7 +129,7 @@ function rules_action_entity_create_info_alter(&$element_info, RulesAbstractPlug
 /**
  * Action: Save entities.
  */
-function rules_action_entity_save($wrapper, $immediate = FALSE, $settings, $state, $element) {
+function rules_action_entity_save($wrapper, $immediate, $settings, $state, $element) {
   $state->saveChanges($settings['data:select'], $wrapper, $immediate);
 }
 
@@ -178,3 +180,7 @@ function rules_condition_entity_field_access(EntityDrupalWrapper $wrapper, $fiel
   $field = field_info_field($field_name);
   return !empty($field) && field_access($op, $field, $wrapper->type(), $wrapper->value(), $account = NULL);
 }
+
+/**
+ * @} End of "addtogroup rules"
+ */
