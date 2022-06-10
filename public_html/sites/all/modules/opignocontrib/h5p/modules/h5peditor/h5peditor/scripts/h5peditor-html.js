@@ -1,6 +1,4 @@
-var H5PEditor = H5PEditor || {};
-var ns = H5PEditor;
-
+/* global ns CKEDITOR */
 /**
  * Adds a html text field to the form.
  *
@@ -25,6 +23,16 @@ ns.Html.prototype.defaultTags = ['strong', 'em', 'del', 'h2', 'h3', 'a', 'ul', '
 // And might be more efficient if this.tags.contains() were used?
 ns.Html.prototype.inTags = function (value) {
   return (ns.$.inArray(value.toLowerCase(), this.tags) >= 0);
+};
+
+/**
+ * Check if the provided button is enabled by config.
+ *
+ * @param {string} value
+ * @return {boolean}
+ */
+ns.Html.prototype.inButtons = function (button) {
+  return (H5PIntegration.editor !== undefined && H5PIntegration.editor.wysiwygButtons !== undefined && H5PIntegration.editor.wysiwygButtons.indexOf(button) !== -1);
 };
 
 ns.Html.prototype.createToolbar = function () {
@@ -106,6 +114,14 @@ ns.Html.prototype.createToolbar = function () {
     ns.$.merge(this.tags, ["tr", "td", "th", "colgroup", "thead", "tbody", "tfoot"]);
   }
   if (this.inTags("hr")) inserts.push("HorizontalRule");
+  if (this.inTags('code')) {
+    if (this.inButtons('inlineCode')) {
+      inserts.push('Code');
+    }
+    if (this.inTags('pre') && this.inButtons('codeSnippet')) {
+      inserts.push('CodeSnippet');
+    }
+  }
   if (inserts.length > 0) {
     toolbar.push({
       name: "insert",
@@ -217,9 +233,6 @@ ns.Html.prototype.createToolbar = function () {
       else {
         ret.fontSize_defaultLabel = '100%';
 
-        // Standard font size that is used. (= 100%)
-        var defaultFont = 16;
-
         // Standard font sizes that is available.
         var defaultAvailable = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 26, 28, 36, 48, 72];
         for (var i = 0; i < defaultAvailable.length; i++) {
@@ -228,9 +241,7 @@ ns.Html.prototype.createToolbar = function () {
           var em = defaultAvailable[i] / 16;
           ret.fontSize_sizes += (em * 100) + '%/' + em + 'em;';
         }
-
       }
-
     }
 
     if (this.field.font.color) {
@@ -271,7 +282,8 @@ ns.Html.prototype.createToolbar = function () {
   if (this.field.enterMode === 'p' || formats.length > 0) {
     this.tags.push('p');
     ret.enterMode = CKEDITOR.ENTER_P;
-  } else {
+  }
+  else {
     // Default to DIV, not allowing BR at all.
     this.tags.push('div');
     ret.enterMode = CKEDITOR.ENTER_DIV;
@@ -300,7 +312,9 @@ ns.Html.prototype.appendTo = function ($wrapper) {
     startupFocus: true,
     enterMode: CKEDITOR.ENTER_DIV,
     allowedContent: true, // Disables the ckeditor content filter, might consider using it later... Must make sure it doesn't remove math...
-    protectedSource: []
+    protectedSource: [],
+    contentsCss: ns.basePath + 'styles/css/cke-contents.css', // We want to customize the CSS inside the editor
+    codeSnippet_codeClass: 'h5p-hl'
   };
   ns.$.extend(ckConfig, this.createToolbar());
 
@@ -332,6 +346,47 @@ ns.Html.prototype.appendTo = function ($wrapper) {
     }
     // Remove existing CK instance.
     ns.Html.removeWysiwyg();
+
+    CKEDITOR.document.getBody = function () {
+      // Have to attach to an element that does not get hidden or removed, since an internal "calculator" element
+      // inside CKeditor relies on this element to always exist and not be hidden.
+      return new CKEDITOR.dom.element(window.document.body);
+    };
+
+    // Override convertToPx to make sure the calculator is always visible so it can make the measurements and is
+    // removed after the measurements are done, adapted from:
+    // https://github.com/ckeditor/ckeditor4/blob/cae20318d46745cc46c811da4e7d68b38ca32449/core/tools.js#L899-L929
+    CKEDITOR.tools.convertToPx = function (cssLength) {
+        const calculator = CKEDITOR.dom.element.createFromHtml( '<div style="position:absolute;left:-9999px;' +
+          'top:-9999px;margin:0px;padding:0px;border:0px;"' +
+          '></div>', CKEDITOR.document );
+        CKEDITOR.document.getBody().append(calculator);
+
+        if ( !( /%$/ ).test( cssLength ) ) {
+          var isNegative = parseFloat( cssLength ) < 0,
+            ret;
+
+          if ( isNegative ) {
+            cssLength = cssLength.replace( '-', '' );
+          }
+
+          calculator.setStyle( 'width', cssLength );
+          ret = calculator.$.clientWidth;
+
+          if (calculator.$ && calculator.$.parentNode) {
+            calculator.$.parentNode.removeChild(calculator.$);
+          }
+          if ( isNegative ) {
+            return -ret;
+          }
+          return ret;
+        }
+
+        if (calculator.$ && calculator.$.parentNode) {
+          calculator.$.parentNode.removeChild(calculator.$);
+        }
+        return cssLength;
+    };
 
     ns.Html.current = that;
     ckConfig.width = this.offsetWidth - 8; // Avoid miscalculations
@@ -373,7 +428,7 @@ ns.Html.prototype.appendTo = function ($wrapper) {
     // at this point... Use case from commit message: "Make the default
     // linkTargetType blank for ckeditor" - STGW
     if (ns.Html.first) {
-      CKEDITOR.on('dialogDefinition', function(e) {
+      CKEDITOR.on('dialogDefinition', function (e) {
         // Take the dialog name and its definition from the event data.
         var dialogName = e.data.name;
         var dialogDefinition = e.data.definition;
@@ -399,13 +454,11 @@ ns.Html.prototype.appendTo = function ($wrapper) {
           var $item = ns.Html.current.$item;
 
           // Position dialog above text field
-          var itemPos = $item.offset();
-          var itemWidth = $item.width();
-          var itemHeight = $item.height();
+          var itemPos = $item[0].getBoundingClientRect();
           var dialogSize = this.getSize();
 
-          var x = itemPos.left + (itemWidth / 2) - (dialogSize.width / 2);
-          var y = itemPos.top + (itemHeight / 2) - (dialogSize.height / 2);
+          var x = itemPos.x + (itemPos.width / 2) - (dialogSize.width / 2);
+          var y = itemPos.y + (itemPos.height / 2) - (dialogSize.height / 2);
 
           this.move(x, y, true);
         };
@@ -419,7 +472,12 @@ ns.Html.prototype.appendTo = function ($wrapper) {
  * Create HTML for the HTML field.
  */
 ns.Html.prototype.createHtml = function () {
-  var input = '<div class="ckeditor" tabindex="0" contenteditable="true">';
+  const id = ns.getNextFieldId(this.field);
+  var input = '<div id="' + id + '"';
+  if (this.field.description !== undefined) {
+    input += ' aria-describedby="' + ns.getDescriptionId(id) + '"';
+  }
+  input += ' class="ckeditor" tabindex="0" contenteditable="true">';
   if (this.value !== undefined) {
     input += this.value;
   }
@@ -428,7 +486,7 @@ ns.Html.prototype.createHtml = function () {
   }
   input += '</div>';
 
-  return ns.createFieldMarkup(this.field, ns.createImportantDescription(this.field.important) + input);
+  return ns.createFieldMarkup(this.field, ns.createImportantDescription(this.field.important) + input, id);
 };
 
 /**
@@ -445,8 +503,11 @@ ns.Html.prototype.validate = function () {
   // Get contents from editor
   var value = this.ckeditor !== undefined ? this.ckeditor.getData() : this.$input.html();
 
-  // Remove placeholder text if any:
-  value = value.replace(/<span class="h5peditor-ckeditor-placeholder">.*<\/span>/, '');
+  value = value
+    // Remove placeholder text if any:
+    .replace(/<span class="h5peditor-ckeditor-placeholder">.*<\/span>/, '')
+    // Workaround for Microsoft browsers that otherwise can produce non-emtpy fields causing trouble
+    .replace(/^<br>$/, '');
 
   var $value = ns.$('<div>' + value + '</div>');
   var textValue = $value.text();
@@ -472,7 +533,8 @@ ns.Html.prototype.validate = function () {
   // Display errors and bail if set.
   if (that.$errors.children().length) {
     return false;
-  } else {
+  }
+  else {
     this.$input.removeClass('error');
   }
 
@@ -504,6 +566,21 @@ ns.Html.removeWysiwyg = function () {
  */
 ns.Html.prototype.remove = function () {
   this.$item.remove();
+};
+
+/**
+ * When someone from the outside wants to set a value.
+ *
+ * @param {string} value
+ */
+ns.Html.prototype.forceValue = function (value) {
+  if (this.ckeditor === undefined) {
+    this.$input.html(value);
+  }
+  else {
+    this.ckeditor.setData(value);
+  }
+  this.validate();
 };
 
 ns.widgets.html = ns.Html;
