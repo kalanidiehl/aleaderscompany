@@ -162,7 +162,7 @@
   function template_preprocess_front_layers_render(&$variables) {
     $layer = $variables['layer'];
 
-    if (!isset($layer{"title"}))
+    if (!isset($layer["title"]))
       $layer["title"] = "";
 
     # Get image url for image layer
